@@ -1,0 +1,39 @@
+{
+  "name": "compose-reducer",
+  "version": "0.0.1",
+  "description": "composable reducer",
+  "keywords": [
+    "redux",
+    "reducer",
+    "compose"
+  ],
+  "main": "src/index.js",
+  "repository": "https://github.com/Patrick-lin/compose-reducer.git",
+  "author": "Patrick <shantry@hotmail.fr>",
+  "license": "MIT",
+  "private": false,
+  "scripts": {
+    "test": "jest test",
+    "test:watch": "yarn test --watch",
+    "test:cov": "yarn test --coverage",
+    "lint": "eslint src",
+    "build": "babel-cli -s inline -d lib src"
+  },
+  "dependencies": {},
+  "prettier": {
+    "singleQuote": true
+  },
+  "devDependencies": {
+    "@babel/core": "^7.7.2",
+    "@babel/preset-env": "^7.7.1",
+    "babel-jest": "^24.9.0",
+    "eslint": "^6.6.0",
+    "eslint-config-airbnb-base": "^14.0.0",
+    "eslint-config-prettier": "^6.5.0",
+    "eslint-plugin-import": "^2.18.2",
+    "eslint-plugin-prettier": "^3.1.1",
+    "eslint-plugin-security": "^1.4.0",
+    "jest": "^24.9.0",
+    "prettier": "^1.19.1"
+  }
+}
