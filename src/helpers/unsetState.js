@@ -1,19 +1,17 @@
-import { get } from '../utils/get';
 import { ensureNewRefInNextState } from './ensureNewRef';
 import { initial } from '../utils/initial';
 import { last } from '../utils/last';
-import { isNil } from '../utils/isNil';
+import { has } from '../utils/has';
 
-export const unsetState = (handyState, path) => {
+export const unsetState = (trackingState, path) => {
   const parentPath = initial(path);
 
-  const parent = get(handyState.nextState, parentPath);
-  if (isNil(parent)) {
+  if (!has(trackingState.nextState, path)) {
     return;
   }
 
   // ensure that all parent container are new ref
-  const parentState = ensureNewRefInNextState(handyState, parentPath);
+  const parentState = ensureNewRefInNextState(trackingState, parentPath);
 
   // as parent state container is a new ref, we can mutate
   const key = last(path);

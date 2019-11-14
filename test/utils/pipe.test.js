@@ -37,7 +37,7 @@ describe('utils', () => {
       expect(add12).toHaveBeenCalled();
       expect(mult5).toHaveBeenCalled();
       expect(sub3).toHaveBeenCalled();
-      expect(res).toBe({ value: 58 });
+      expect(res).toEqual({ value: 62 });
     });
   });
 });
