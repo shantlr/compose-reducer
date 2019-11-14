@@ -22,6 +22,9 @@ export const composeReducer = (...composableReducers) => {
   );
 };
 
+/**
+ * Create a tracking state given reducer
+ */
 export const createReducer = reduce => trackingState => {
   reduce(trackingState);
   return trackingState;
