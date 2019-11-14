@@ -3,6 +3,10 @@ export { unsetState } from './helpers/unsetState';
 export { updateState } from './helpers/updateState';
 
 export { setValue, setValueBase } from './reducers/setValue';
+
+export { incValue } from './reducers/incValue';
+export { decValue } from './reducers/decValue';
+
 export { popValue, popValues } from './reducers/popValues';
 export { pushValue, pushValues } from './reducers/pushValues';
 
