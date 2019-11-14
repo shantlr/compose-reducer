@@ -1,8 +1,10 @@
+import { get } from 'http';
 import { createReducer } from '../helpers/createReducer';
 import { wrapPathResolver, wrapValueResolver } from '../helpers/resolve';
 import { updateState } from '../helpers/updateState';
+import { ensureNewRefInNextState } from '../helpers/ensureNewRef';
 
-export const setValue = (pathResolver, valueResolver) => {
+export const setValueBase = (pathResolver, valueResolver, handleResult) => {
   const resolvePath = wrapPathResolver(pathResolver);
   if (!resolvePath) {
     throw new Error(
@@ -14,10 +16,18 @@ export const setValue = (pathResolver, valueResolver) => {
 
   const setValueReducer = trackingState => {
     const path = resolvePath(trackingState);
-    const value = resolveValue(trackingState);
 
-    return updateState(trackingState, path, value);
+    const oldValue = get(trackingState.nextState, path);
+    const value = resolveValue(trackingState, { value: oldValue });
+
+    handleResult(trackingState, path, value, oldValue);
   };
 
   return createReducer(setValueReducer);
 };
+
+export const setValue = (pathResolver, valueResolver) =>
+  setValueBase(pathResolver, valueResolver, (trackingState, path, value) => {
+    ensureNewRefInNextState(trackingState, path);
+    updateState(trackingState, path, value);
+  });

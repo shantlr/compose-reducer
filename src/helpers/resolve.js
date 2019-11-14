@@ -1,8 +1,9 @@
 import { isString } from '../utils/isString';
 import { isFunction } from '../utils/isFunction';
 
-export const resolve = (resolver, trackingState) => {
+export const resolve = (resolver, trackingState, additionalMeta) => {
   return resolver(trackingState.nextState, trackingState.action, {
+    ...additionalMeta,
     prevState: trackingState.state,
     context: trackingState.context
   });
@@ -23,7 +24,8 @@ export const wrapPathResolver = pathResolver => {
 
 export const wrapValueResolver = valueResolver => {
   if (isFunction(valueResolver)) {
-    return trackingState => resolve(valueResolver, trackingState);
+    return (trackingState, additionalMeta) =>
+      resolve(valueResolver, trackingState, additionalMeta);
   }
   return () => valueResolver;
 };
