@@ -4,6 +4,28 @@
 
 Compose-reducer helps you create less verbose and more expressive reducer.
 
+- [compose-reducer](#compose-reducer)
+  - [Install](#install)
+  - [Api](#api)
+    - [`composeReducer`](#composereducer)
+    - [Composable Reducer](#composable-reducer)
+    - [Base](#base)
+      - [`setValue`](#setvalue)
+      - [`unsetValue`](#unsetvalue)
+      - [`incValue`](#incvalue)
+      - [`decValue`](#decvalue)
+      - [`pushValue`](#pushvalue)
+      - [`pushValues`](#pushvalues)
+      - [`popValue`](#popvalue)
+      - [`popValues`](#popvalues)
+      - [`normalize`](#normalize)
+    - [Flow](#flow)
+      - [`branch`](#branch)
+      - [`branchAction`](#branchaction)
+    - [Context](#context)
+      - [`setContext`](#setcontext)
+      - [`scope`](#scope)
+
 ## Install
 
 ...
@@ -33,6 +55,8 @@ Composable reducer will be applied in given order
 ```
 
 ### Composable Reducer
+
+### Base
 
 #### `setValue`
 
