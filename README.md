@@ -15,7 +15,7 @@ Compose-reducer helps you create less verbose and more expressive reducer.
 This function create a reducer with given pipeline of reducer block
 
 ```ts
-  composeReducer(...composableReducers: ComposableReducer[])
+  composeReducer(...composableReducers: ComposableReducer[]): (state: any, action: any) => nextState
 ```
 
 Composable reducer will be applied in given order
@@ -25,9 +25,9 @@ Composable reducer will be applied in given order
     incValue('counter1', 1),
     incValue('counter2', 10),
     incValue('counter1', 5),
-  )
+  );
 
-  const initalState = { counter1: 0, counter2: 2 }
+  const initalState = { counter1: 0, counter2: 2 };
   const nextState = reducer(initialState);
   // nextState === { counter1: 6, counter2: 12 }
 ```
