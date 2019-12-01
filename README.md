@@ -4,21 +4,23 @@
 
 Compose-reducer helps you create less verbose and more expressive reducer.
 
-# Api
+## Install
 
-## `composeReducer`
+...
+
+## Api
+
+### `composeReducer`
 
 This function create a reducer with given pipeline of reducer block
 
-```
-  composeReducer(
-    setValue()
-  )
+```ts
+  composeReducer(...composableReducers: ComposableReducer[])
 ```
 
-## Reducer components
+### Composable Reducer
 
-### `setValue`
+#### `setValue`
 
 ```ts
 setValue(
@@ -56,7 +58,7 @@ const nextState = reducer(initialState, { payload: { item: { id: '42' } } })
 // nextState === { entites: { 1: { id: '1' }, 42: { id: '42' } } }
 ```
 
-### `unsetValue`
+#### `unsetValue`
 
 ```ts
 unsetValue(
@@ -94,7 +96,7 @@ const nextState = reducer(initialState, { payload: { itemId: '1' } })
 // nextState === { entites: { 42: { id: '42' } } }
 ```
 
-### `incValue`
+#### `incValue`
 
 ```ts
 incValue(
@@ -107,7 +109,7 @@ incValue(
 
 ```
 
-### `decValue`
+#### `decValue`
 
 ```ts
 decValue(
@@ -116,7 +118,7 @@ decValue(
 ): ComposableReducer
 ```
 
-### `pushValue`
+#### `pushValue`
 
 ```ts
 pushValue(
@@ -125,7 +127,7 @@ pushValue(
 ): ComposableReducer
 ```
 
-### `pushValues`
+#### `pushValues`
 
 ```ts
 pushValues(
@@ -134,7 +136,7 @@ pushValues(
 ): ComposableReducer
 ```
 
-### `popValue`
+#### `popValue`
 
 ```ts
 popValue(
@@ -143,7 +145,7 @@ popValue(
 ): ComposableReducer
 ```
 
-### `popValues`
+#### `popValues`
 
 ```ts
 popValues(
@@ -152,11 +154,11 @@ popValues(
 ): ComposableReducer
 ```
 
-### `normalize`
+#### `normalize`
 
-## Flow
+### Flow
 
-### `branch`
+#### `branch`
 
 ```ts
 branch(
@@ -166,7 +168,7 @@ branch(
 ): ComposableReducer
 ```
 
-### `branchAction`
+#### `branchAction`
 
 ```ts
 branchAction(
@@ -198,8 +200,8 @@ branchAction(
 )
 ```
 
-## Context
+### Context
 
-### `setContext`
+#### `setContext`
 
-### `scope`
+#### `scope`
