@@ -23,7 +23,7 @@ Composable reducer will be applied in given order
 ```js
   const reducer = composeReducer(
     incValue('counter1', 1),
-    incValue('counter2', 10)
+    incValue('counter2', 10),
     incValue('counter1', 5),
   )
 
