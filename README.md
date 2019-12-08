@@ -7,24 +7,24 @@ Compose-reducer helps you create less verbose and more expressive reducer.
 - [compose-reducer](#compose-reducer)
   - [Install](#install)
   - [Api](#api)
-    - [`composeReducer`](#composereducer)
+    - [composeReducer](#composereducer)
     - [Composable Reducer](#composable-reducer)
-    - [Base](#base)
-      - [`setValue`](#setvalue)
-      - [`unsetValue`](#unsetvalue)
-      - [`incValue`](#incvalue)
-      - [`decValue`](#decvalue)
-      - [`pushValue`](#pushvalue)
-      - [`pushValues`](#pushvalues)
-      - [`popValue`](#popvalue)
-      - [`popValues`](#popvalues)
-      - [`normalize`](#normalize)
-    - [Flow](#flow)
-      - [`branch`](#branch)
-      - [`branchAction`](#branchaction)
+    - [Value composable reducer](#value-composable-reducer)
+      - [setValue](#setvalue)
+      - [unsetValue](#unsetvalue)
+      - [incValue](#incvalue)
+      - [decValue](#decvalue)
+      - [pushValue](#pushvalue)
+      - [pushValues](#pushvalues)
+      - [popValue](#popvalue)
+      - [popValues](#popvalues)
+      - [normalize](#normalize)
+    - [Flow composable reducer](#flow-composable-reducer)
+      - [branch](#branch)
+      - [branchAction](#branchaction)
     - [Context](#context)
-      - [`setContext`](#setcontext)
-      - [`scope`](#scope)
+      - [setContext](#setcontext)
+      - [scope](#scope)
 
 ## Install
 
@@ -34,19 +34,19 @@ Compose-reducer helps you create less verbose and more expressive reducer.
 
 ### `composeReducer`
 
-This function create a reducer with given pipeline of reducer block
+This function create a reducer with given pipeline of [composable reducer](#composable-reducer)
 
 ```ts
-  composeReducer(...composableReducers: ComposableReducer[]): (state: any, action: any) => nextState
+  composeReducer(...composableReducers: ComposableReducer[]): (state: State, action: Action) => State
 ```
 
-Composable reducer will be applied in given order
+Composable reducer will be applied in given order.
 
 ```js
   const reducer = composeReducer(
-    incValue('counter1', 1),
-    incValue('counter2', 10),
-    incValue('counter1', 5),
+    incValue('counter1', 1),  // increase counter1 field by 1
+    incValue('counter2', 10), // then increase counter2 field by 10
+    incValue('counter1', 5),  // then increase counter1 field by 5
   );
 
   const initalState = { counter1: 0, counter2: 2 };
@@ -56,9 +56,17 @@ Composable reducer will be applied in given order
 
 ### Composable Reducer
 
-### Base
+Composable reducer are meant to be used within [composeReducer](#composereducer).
+
+### Value composable reducer
 
 #### `setValue`
+
+Set resolved value at resolved path.
+
+Resolved path may be a static string or a function that will compute path given state and action.
+
+Resolved value may be a static value (non function value) or a function that will compute path given state and action.
 
 ```ts
 setValue(
@@ -67,7 +75,7 @@ setValue(
 ): ComposableReducer
 ```
 
-Static path and static value:
+Set value using static path and static value:
 
 ```js
 import { composeReducer, setValue } from '@shantry/compose-reducer';
@@ -79,7 +87,7 @@ const nextState = reducer(initialState);
 // nextState === { field: { nestedField: 'hello world' } }
 ```
 
-Dynamic path and dynamic value:
+Set value using dynamic path and dynamic value:
 
 ```js
 import { composeReducer, setValue } from '@shantry/compose-reducer';
@@ -194,7 +202,7 @@ popValues(
 
 #### `normalize`
 
-### Flow
+### Flow composable reducer
 
 #### `branch`
 
