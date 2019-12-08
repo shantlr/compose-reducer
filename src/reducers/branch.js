@@ -7,6 +7,7 @@ export const branch = (predicate, trueReducers, falseReducers) => {
   const reduceFalseCase = wrapReducers(falseReducers);
 
   const test = trackingState => resolve(predicate, trackingState);
+
   return createReducer(trackingState => {
     if (test(trackingState)) {
       reduceTrueCase(trackingState);
