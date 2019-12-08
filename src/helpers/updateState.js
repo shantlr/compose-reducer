@@ -1,4 +1,4 @@
-import { ensureNewRefInNextState, getRefKey } from './ensureNewRef';
+import { ensureNewRefInNextState } from './ensureNewRef';
 import { initial } from '../utils/initial';
 import { last } from '../utils/last';
 
@@ -7,13 +7,14 @@ export const updateState = (trackingState, path, value) => {
   const parentPath = initial(path);
   const parentState = ensureNewRefInNextState(trackingState, parentPath);
 
-  // as parent state container is a new ref, we can mutate
-  const key = last(path);
-  parentState[key] = value;
-
-  // mark path as updated
-  const refKey = getRefKey(path);
-  trackingState.isNewReference[refKey] = true;
+  if (!path || !path.length) {
+    // nil path => update root
+    trackingState.nextState = value;
+  } else {
+    // as parent state container is a new ref, we can mutate
+    const key = last(path);
+    parentState[key] = value;
+  }
 
   return value;
 };
