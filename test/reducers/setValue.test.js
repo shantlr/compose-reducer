@@ -42,24 +42,32 @@ describe('reducers', () => {
         describe('when path did exist', () => {
           it('should set static path value', () => {
             const reducer = composeReducer(setValue('field1', 'hello world'));
-            expect(reducer({ field1: '' })).toEqual({
+
+            const state = { field1: '' };
+            const nextState = reducer(state);
+            expect(nextState).toEqual({
               field1: 'hello world'
             });
+            expect(state).not.toBe(nextState);
           });
 
           it('should set nested static path', () => {
             const reducer = composeReducer(
               setValue('field1.nested', 'hello world')
             );
-
-            expect(reducer({ field1: { hello: 'world', nested: '' } })).toEqual(
-              {
-                field1: {
-                  hello: 'world',
-                  nested: 'hello world'
-                }
+            const state = {
+              field1: { hello: { another: 'hello' }, nested: '' }
+            };
+            const nextState = reducer(state);
+            expect(nextState).toEqual({
+              field1: {
+                hello: { another: 'hello' },
+                nested: 'hello world'
               }
-            );
+            });
+            expect(state).not.toBe(nextState);
+            expect(state.field1).not.toBe(nextState.field1);
+            expect(state.field1.hello).toBe(nextState.field1.hello);
           });
         });
       });
@@ -76,11 +84,78 @@ describe('reducers', () => {
           expect(pathResolver.mock.calls[0][1]).toBe(action);
         });
 
-        it('should set dyanmic path value', () => {
-          const reducer = composeReducer(setValue('field1', 'hello world'));
-          expect(reducer({ field1: '' })).toEqual({
-            field1: 'hello world'
+        it('should set value with string path ', () => {
+          const reducer = composeReducer(
+            setValue(() => 'field1', 'hello world')
+          );
+
+          const state = { field1: '', field2: {} };
+          const nextState = reducer(state);
+          expect(nextState).toEqual({
+            field1: 'hello world',
+            field2: {}
           });
+          expect(state).not.toBe(nextState);
+          expect(state.field2).toBe(nextState.field2);
+        });
+
+        it('should set value with multi-level string path', () => {
+          const reducer = composeReducer(
+            setValue(() => 'field1.nested.nested2', 'hello world')
+          );
+
+          const state = { field1: { hello: { world: true } }, field2: {} };
+          const nextState = reducer(state);
+          expect(nextState).toEqual({
+            field1: {
+              hello: { world: true },
+              nested: {
+                nested2: 'hello world'
+              }
+            },
+            field2: {}
+          });
+          expect(state).not.toBe(nextState);
+          expect(state.field1).not.toBe(nextState.field1);
+          expect(state.field1.hello).toBe(nextState.field1.hello);
+          expect(state.field2).toBe(nextState.field2);
+        });
+
+        it('should set value with array path ', () => {
+          const reducer = composeReducer(
+            setValue(() => ['field1'], 'hello world')
+          );
+
+          const state = { field1: '', field2: {} };
+          const nextState = reducer(state);
+          expect(nextState).toEqual({
+            field1: 'hello world',
+            field2: {}
+          });
+          expect(state).not.toBe(nextState);
+          expect(state.field2).toBe(nextState.field2);
+        });
+
+        it('should set value with multi-level array path', () => {
+          const reducer = composeReducer(
+            setValue(() => ['field1', 'nested', 'nested2'], 'hello world')
+          );
+
+          const state = { field1: { hello: { world: true } }, field2: {} };
+          const nextState = reducer(state);
+          expect(nextState).toEqual({
+            field1: {
+              hello: { world: true },
+              nested: {
+                nested2: 'hello world'
+              }
+            },
+            field2: {}
+          });
+          expect(state).not.toBe(nextState);
+          expect(state.field1).not.toBe(nextState.field1);
+          expect(state.field1.hello).toBe(nextState.field1.hello);
+          expect(state.field2).toBe(nextState.field2);
         });
       });
 
