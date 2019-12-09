@@ -2,9 +2,10 @@ import { get } from './get';
 import { isNil } from './isNil';
 import { last } from './last';
 import { initial } from './initial';
+import { isRootPath } from './isRootPath';
 
 export const has = (object, path) => {
-  if (!path || !path.length) {
+  if (isRootPath(path)) {
     return true;
   }
 

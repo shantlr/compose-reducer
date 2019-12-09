@@ -21,7 +21,19 @@ export const wrapPathResolver = pathResolver => {
     return () => pathResolver;
   }
   if (isFunction(pathResolver)) {
-    return trackingState => resolve(pathResolver, trackingState);
+    return trackingState => {
+      const path = resolve(pathResolver, trackingState);
+      if (isString(path)) {
+        return path.split('.');
+      }
+      if (Array.isArray(path)) {
+        return path;
+      }
+
+      throw new Error(
+        `[path-resolver] Resolved path is expected to be a string or an array of string but received ${path}`
+      );
+    };
   }
   return null;
 };

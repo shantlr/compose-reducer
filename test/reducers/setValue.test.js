@@ -2,7 +2,7 @@ import { setValue, composeReducer } from '../../src';
 
 describe('reducers', () => {
   describe('value', () => {
-    describe('setAction', () => {
+    describe('setValue', () => {
       it('should set root value', () => {
         const value = { hello: 'world' };
         const reducer = composeReducer(setValue(null, value));
