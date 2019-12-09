@@ -56,7 +56,25 @@ describe('reducers', () => {
         });
       });
 
-      describe('dynamic path', () => {});
+      describe('dynamic path', () => {
+        it('should call path resolver with state and action', () => {
+          const pathResolver = jest.fn().mockReturnValue(['field1']);
+          const reducer = composeReducer(setValue(pathResolver, 'hello world'));
+          const state = { field1: 'value' };
+          const action = { type: 'ACTION' };
+          reducer(state, action);
+          expect(pathResolver).toHaveBeenCalled();
+          expect(pathResolver.mock.calls[0][0]).toBe(state);
+          expect(pathResolver.mock.calls[0][1]).toBe(action);
+        });
+
+        it('should set dyanmic path value', () => {
+          const reducer = composeReducer(setValue('field1', 'hello world'));
+          expect(reducer({ field1: '' })).toEqual({
+            field1: 'hello world'
+          });
+        });
+      });
     });
   });
 });
