@@ -3,13 +3,17 @@ import { isFunction } from '../utils/isFunction';
 
 export const resolve = (resolver, trackingState, additionalMeta) => {
   return resolver(trackingState.nextState, trackingState.action, {
-    ...additionalMeta,
     prevState: trackingState.state,
-    context: trackingState.context
+    context: trackingState.context,
+    ...additionalMeta
   });
 };
 
 export const wrapPathResolver = pathResolver => {
+  if (pathResolver == null) {
+    return () => [];
+  }
+
   if (isString(pathResolver)) {
     return () => pathResolver.split('.');
   }

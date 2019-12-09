@@ -3,6 +3,10 @@ export const pipe = (firstFunction, ...functions) => {
     return () => undefined;
   }
 
+  if (!functions.length) {
+    return firstFunction;
+  }
+
   return (...args) =>
     functions.reduce((value, ft) => ft(value), firstFunction(...args));
 };

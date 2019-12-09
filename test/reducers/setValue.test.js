@@ -12,7 +12,15 @@ describe('reducers', () => {
         expect(reducer({ hello: 'world....' })).toBe(value);
       });
 
-      describe('static path', () => {
+      describe('when path is static', () => {
+        describe('when value is static', () => {
+          it('should set string value as is', () => {
+            const reducer = composeReducer(setValue('', 'hello world'));
+
+            expect(reducer('')).toEqual('hello world');
+          });
+        });
+
         describe('when path did not exist', () => {
           it('should set static path value', () => {
             const reducer = composeReducer(setValue('field1', 'hello world'));
@@ -73,6 +81,19 @@ describe('reducers', () => {
           expect(reducer({ field1: '' })).toEqual({
             field1: 'hello world'
           });
+        });
+      });
+
+      describe('dynamic value', () => {
+        it('should call value resolver with state and action', () => {
+          const valueResolver = jest.fn().mockReturnValue(['field1']);
+          const reducer = composeReducer(setValue('', valueResolver));
+          const state = { field1: 'value' };
+          const action = { type: 'ACTION' };
+          reducer(state, action);
+          expect(valueResolver).toHaveBeenCalled();
+          expect(valueResolver.mock.calls[0][0]).toBe(state);
+          expect(valueResolver.mock.calls[0][1]).toBe(action);
         });
       });
     });

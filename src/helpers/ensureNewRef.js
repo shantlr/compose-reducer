@@ -2,8 +2,9 @@ import { get } from '../utils/get';
 import { shallowClone } from '../utils/shallowClone';
 import { last } from '../utils/last';
 import { initial } from '../utils/initial';
+import { isRootPath } from '../utils/isRootPath';
 
-export const getRefKey = (path = []) => path.join('.');
+export const getRefKey = path => (path || []).join('.');
 
 // ensure that given path is a new reference
 // and return the substate correponding to the path
@@ -18,7 +19,7 @@ export const ensureNewRefInNextState = (trackingState, path = []) => {
   trackingState.isNewReference[refKey] = true;
 
   // state root case
-  if (!path || !path.length) {
+  if (isRootPath(path)) {
     // new ref of state
     trackingState.nextState = shallowClone(trackingState.nextState);
     return trackingState.nextState;
