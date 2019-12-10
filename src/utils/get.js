@@ -9,7 +9,9 @@ export const get = (value, path) => {
         break;
       }
       const field = path[i];
-      selectedValue = selectedValue[field];
+      if (field !== '') {
+        selectedValue = selectedValue[field];
+      }
     }
   }
 

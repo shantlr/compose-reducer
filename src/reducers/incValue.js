@@ -10,5 +10,6 @@ export const incValue = (pathResolver, valueResolver) =>
       if (!isNil(value)) {
         updateState(trackingState, path, value + (oldValue || 0));
       }
-    }
+    },
+    'incValue'
   );
