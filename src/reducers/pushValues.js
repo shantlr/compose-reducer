@@ -1,26 +1,64 @@
 import { setValueBase } from './setValue';
 import { updateState } from '../helpers/updateState';
+import { resolve } from '../helpers/resolve';
 
-export const pushValues = (pathResolver, valuesResolver) => {
+const isIterable = value => typeof value[Symbol.iterator] === 'function';
+
+const lastIndexResolver = (state, action, { oldValues }) => {
+  if (oldValues) {
+    return oldValues.length || 0;
+  }
+  return 0;
+};
+
+export const pushValues = (
+  pathResolver,
+  valuesResolver,
+  indexResolver = lastIndexResolver
+) => {
   return setValueBase(
     pathResolver,
     valuesResolver,
     (trackingState, path, values, oldValues) => {
-      if (!oldValues || !oldValues.length) {
+      if (!values || !values.length) {
         return;
       }
 
-      updateState(trackingState, path, [...oldValues, ...values]);
-    }
+      if (!oldValues || isIterable(oldValues)) {
+        const index = resolve(indexResolver, trackingState, { oldValues });
+        const nextValue = [...(oldValues || [])];
+        nextValue.splice(index, 0, ...values);
+        updateState(trackingState, path, nextValue);
+      } else {
+        throw new Error(
+          `[pushValues] previous value is not iterable ${oldValues}`
+        );
+      }
+    },
+    'pushValues'
   );
 };
 
-export const pushValue = (pathResolver, valueResolver) => {
+export const pushValue = (
+  pathResolver,
+  valueResolver,
+  indexResolver = lastIndexResolver
+) => {
   return setValueBase(
     pathResolver,
     valueResolver,
     (trackingState, path, value, oldValues) => {
-      updateState(trackingState, path, [...oldValues, value]);
-    }
+      if (!oldValues || isIterable(oldValues)) {
+        const index = resolve(indexResolver, trackingState, { oldValues });
+        const nextValue = [...(oldValues || [])];
+        nextValue.splice(index, 0, value);
+        updateState(trackingState, path, nextValue);
+      } else {
+        throw new Error(
+          `[pushValue] previous value is not iterable ${oldValues}`
+        );
+      }
+    },
+    'pushValue'
   );
 };

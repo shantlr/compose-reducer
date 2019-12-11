@@ -20,6 +20,10 @@ export const wrapPathResolver = pathResolver => {
   if (Array.isArray(pathResolver)) {
     return () => pathResolver;
   }
+  if (typeof pathResolver === 'number') {
+    return () => [pathResolver.toString()];
+  }
+
   if (isFunction(pathResolver)) {
     return trackingState => {
       const path = resolve(pathResolver, trackingState);

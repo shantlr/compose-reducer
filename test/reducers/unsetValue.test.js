@@ -13,9 +13,6 @@ describe('reducers', () => {
           expect(() => unsetValue(true)).toThrow(
             '[unsetValue]: Invalid pathResolver. Expected a string, an array of string or a function but received'
           );
-          expect(() => unsetValue(42)).toThrow(
-            '[unsetValue]: Invalid pathResolver. Expected a string, an array of string or a function but received'
-          );
           expect(() => unsetValue({ hello: 'world' })).toThrow(
             '[unsetValue]: Invalid pathResolver. Expected a string, an array of string or a function but received'
           );

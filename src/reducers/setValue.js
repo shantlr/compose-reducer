@@ -1,7 +1,6 @@
 import { createReducer } from '../helpers/createReducer';
 import { wrapPathResolver, wrapValueResolver } from '../helpers/resolve';
 import { updateState } from '../helpers/updateState';
-import { ensureNewRefInNextState } from '../helpers/ensureNewRef';
 import { get } from '../utils/get';
 
 export const setValueBase = (
@@ -35,7 +34,6 @@ export const setValue = (pathResolver, valueResolver) =>
     pathResolver,
     valueResolver,
     (trackingState, path, value) => {
-      ensureNewRefInNextState(trackingState, path);
       updateState(trackingState, path, value);
     },
     'setValue'
