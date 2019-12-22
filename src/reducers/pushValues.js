@@ -1,8 +1,7 @@
 import { setValueBase } from './setValue';
 import { updateState } from '../helpers/updateState';
 import { resolve } from '../helpers/resolve';
-
-const isIterable = value => typeof value[Symbol.iterator] === 'function';
+import { isIterable } from '../utils/isIterable';
 
 const lastIndexResolver = (state, action, { oldValues }) => {
   if (oldValues) {

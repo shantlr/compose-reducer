@@ -1,5 +1,6 @@
 import { setValueBase } from './setValue';
 import { updateState } from '../helpers/updateState';
+import { isIterable } from '../utils/isIterable';
 
 export const popValues = (pathResolver, indexesResolver) => {
   return setValueBase(
@@ -21,7 +22,8 @@ export const popValues = (pathResolver, indexesResolver) => {
       if (nextArray.length < oldArray.length) {
         updateState(trackingState, path, nextArray);
       }
-    }
+    },
+    'popValues'
   );
 };
 
@@ -34,10 +36,15 @@ export const popValue = (pathResolver, indexResolver) => {
         return;
       }
 
+      if (!isIterable(oldValues)) {
+        throw new Error('[popValue] previous value is not iterable');
+      }
+
       const nextArray = oldValues.filter(
         (elem, elemIndex) => elemIndex !== index
       );
       updateState(trackingState, path, nextArray);
-    }
+    },
+    'popValue'
   );
 };
