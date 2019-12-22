@@ -16,7 +16,6 @@ Compose-reducer helps you create less verbose and more expressive reducer.
       - [decValue](#decvalue)
       - [pushValue](#pushvalue)
       - [pushValues](#pushvalues)
-      - [popValue](#popvalue)
       - [popValues](#popvalues)
       - [normalize](#normalize)
     - [Flow composable reducer](#flow-composable-reducer)
@@ -182,21 +181,12 @@ pushValues(
 ): ComposableReducer
 ```
 
-#### `popValue`
-
-```ts
-popValue(
-  pathResolver: string | string[] | ((state: Object, action: Object) => string | string[])
-  popedValueIndexResolver: (state: Object, action: Object) => number | number
-): ComposableReducer
-```
-
 #### `popValues`
 
 ```ts
 popValues(
   pathResolver: string | string[] | ((state: Object, action: Object) => string | string[])
-  popedValueIndexesResolver: (state: Object, action: Object) => number[] | number[]
+  popedValueIndexesResolver: number | number[] | ((state: Object, action: Object) => number| number[])
 ): ComposableReducer
 ```
 
