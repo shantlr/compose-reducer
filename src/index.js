@@ -8,7 +8,7 @@ export { unsetValue } from './reducers/unsetValue';
 export { incValue } from './reducers/incValue';
 export { decValue } from './reducers/decValue';
 
-export { popValue, popValues } from './reducers/popValues';
+export { popValues } from './reducers/popValues';
 export { pushValue, pushValues } from './reducers/pushValues';
 
 export { branch } from './reducers/branch';

@@ -1,22 +1,37 @@
 import { setValueBase } from './setValue';
 import { updateState } from '../helpers/updateState';
-import { isIterable } from '../utils/isIterable';
+import { isNil } from '../utils/isNil';
 
 export const popValues = (pathResolver, indexesResolver) => {
   return setValueBase(
     pathResolver,
     indexesResolver,
-    (trackingState, path, indexes, oldArray) => {
-      if (!indexes || !indexes.length) {
+    (trackingState, path, indexes, oldArray = []) => {
+      if (
+        isNil(indexes) ||
+        indexes === -1 ||
+        !oldArray ||
+        (Array.isArray(indexes) && !indexes.length)
+      ) {
         return;
       }
-      const indexMap = indexes.reduce((map, index) => {
-        map[index] = true;
-        return map;
-      }, {});
+
+      if (oldArray && !Array.isArray(oldArray)) {
+        throw new Error('[popValues] previous value is not iterable');
+      }
+
+      let indexMap;
+      if (Array.isArray(indexes)) {
+        indexMap = indexes.reduce((map, index) => {
+          map[index] = true;
+          return map;
+        }, {});
+      } else {
+        indexMap = { [indexes]: true };
+      }
 
       const nextArray = oldArray.filter(
-        (elem, elemIndex) => indexMap[elemIndex]
+        (elem, elemIndex) => !indexMap[elemIndex]
       );
 
       if (nextArray.length < oldArray.length) {
@@ -24,27 +39,5 @@ export const popValues = (pathResolver, indexesResolver) => {
       }
     },
     'popValues'
-  );
-};
-
-export const popValue = (pathResolver, indexResolver) => {
-  return setValueBase(
-    pathResolver,
-    indexResolver,
-    (trackingState, path, index, oldValues) => {
-      if (index === -1 || !oldValues || oldValues.length - 1 < index) {
-        return;
-      }
-
-      if (!isIterable(oldValues)) {
-        throw new Error('[popValue] previous value is not iterable');
-      }
-
-      const nextArray = oldValues.filter(
-        (elem, elemIndex) => elemIndex !== index
-      );
-      updateState(trackingState, path, nextArray);
-    },
-    'popValue'
   );
 };
