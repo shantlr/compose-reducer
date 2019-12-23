@@ -2,6 +2,7 @@ import { createReducer } from '../helpers/createReducer';
 import { initial } from '../utils/initial';
 import { last } from '../utils/last';
 import { resolve } from '../helpers/resolve';
+import { isFunction } from '../utils/isFunction';
 
 const addReducer = (actionMap, type, reducer) => {
   if (!actionMap[type]) {
@@ -9,6 +10,20 @@ const addReducer = (actionMap, type, reducer) => {
   } else {
     actionMap[type].push(reducer);
   }
+};
+
+const predicateHandler = (predicate, reducer) => {
+  return createReducer(trackingState => {
+    if (resolve(predicate, trackingState)) {
+      reducer(trackingState);
+    }
+  });
+};
+
+const actionMapToPredicate = actionMap => {
+  return createReducer(trackingState =>
+    Boolean(actionMap[[trackingState.action.type]])
+  );
 };
 
 const actionMapToHandler = actionMap => {
@@ -19,19 +34,30 @@ const actionMapToHandler = actionMap => {
     }
   });
 };
-const predicateHandler = (predicate, reducer) => {
-  return createReducer(trackingState => {
-    if (resolve(predicate, trackingState)) {
-      reducer(trackingState);
-    }
-  });
-};
 
 const addCurrentMapStep = acc => {
   if (Object.keys(acc.currentMap).length) {
     acc.steps.push(actionMapToHandler(acc.currentMap));
+    // reset current map
+    acc.currentMap = {};
   }
   return acc;
+};
+
+const typesToPredicate = types => {
+  const actionTypeMap = {};
+  const predicates = [];
+  types.forEach(type => {
+    if (typeof type === 'string') {
+      actionTypeMap[type] = true;
+    } else {
+      predicates.push(type);
+    }
+  });
+
+  const typeMapPredicate = actionMapToPredicate(actionTypeMap);
+  return trackingState =>
+    typeMapPredicate(trackingState) || predicates.some(p => p(trackingState));
 };
 
 /**
@@ -48,22 +74,18 @@ const compileBranches = branches => {
         const types = initial(branch);
         const reducer = last(branch);
 
-        types.forEach(type => {
-          if (typeof type === 'string') {
-            addReducer(acc.currentMap, type, reducer);
-          } else {
-            // if type is a predicate => we push current map as a step
-            const isHandledPredicate = type;
-            addCurrentMapStep(acc);
+        const doContainPredicate = Boolean(types.find(t => isFunction(t)));
 
-            // then add given predicate and reducer as another step
-            // => This is to ensure that reducers are called in right order
-            acc.steps.push(predicateHandler(isHandledPredicate, reducer));
-          }
-        });
+        if (doContainPredicate) {
+          // if array branch contain a predicate => this array will be a separate step
+          addCurrentMapStep(acc);
+          acc.steps.push(predicateHandler(typesToPredicate(types), reducer));
+        } else {
+          types.forEach(type => addReducer(acc.currentMap, type, reducer));
+        }
       } else if (typeof branch === 'object') {
-        Object.keys(branch).forEach((reducer, type) => {
-          addReducer(acc.currentMap, type, reducer);
+        Object.keys(branch).forEach(type => {
+          addReducer(acc.currentMap, type, branch[type]);
         });
       }
 

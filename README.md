@@ -229,10 +229,8 @@ branchAction(
 
 // equivalent to
 branchAction(
-  [
-    (state, action) => action.type === 'INC_COUNTER', incValue('counter', 1),
-    (state, action) => action.type === 'DEC_COUNTER', decValue('counter', 1),
-  ]
+  [(state, action) => action.type === 'INC_COUNTER', incValue('counter', 1)],
+  [(state, action) => action.type === 'DEC_COUNTER', decValue('counter', 1)],
 )
 ```
 
