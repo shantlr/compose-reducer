@@ -41,7 +41,7 @@ This function create a reducer with given pipeline of [composable reducer](#comp
 
 Composable reducer will be applied in given order.
 
-```js
+```ts
   const reducer = composeReducer(
     incValue('counter1', 1),  // increase counter1 field by 1
     incValue('counter2', 10), // then increase counter2 field by 10
@@ -76,7 +76,7 @@ setValue(
 
 Set value using static path and static value:
 
-```js
+```ts
 import { composeReducer, setValue } from '@shantry/compose-reducer';
 
 const reducer = composeReducer(setValue('field.nestedField', 'hello world'));
@@ -88,7 +88,7 @@ const nextState = reducer(initialState);
 
 Set value using dynamic path and dynamic value:
 
-```js
+```ts
 import { composeReducer, setValue } from '@shantry/compose-reducer';
 
 const reducer = composeReducer(
@@ -113,7 +113,7 @@ unsetValue(
 
 Static path
 
-```js
+```ts
 import { composeReducer, unsetValue } from '@shantry/compose-reducer';
 
 const reducer = composeReducer(
@@ -150,8 +150,28 @@ incValue(
 ): ComposableReducer
 ```
 
-```
+```ts
+const reducer = composeReducer(incValue('counter', 1));
+const initialState = { counter: 0 };
+reducer(initialState); // { counter: 1 }
 
+// equivalent to (dynamic path)
+composeReducer(incValue(
+  (state, action) => 'counter',
+  1
+));
+
+// equivalent to (dynamic value)
+composeReducer(incValue(
+ 'counter',
+ (state, action) => 1,
+));
+
+// equivalent to
+composeReducer(incValue(
+ (state, action) => 'counter',
+ (state, action) => 1,
+));
 ```
 
 #### `decValue`
@@ -161,6 +181,30 @@ decValue(
   pathResolver: string | string[] | ((state: Object, action: Object) => string | string[])
   decValueResolver: (state: Object, action: Object) => any | any
 ): ComposableReducer
+```
+
+```ts
+const reducer = composeReducer(decValue('counter', 1));
+const initialState = { counter: 0 };
+reducer(initialState); // { counter: -1 }
+
+// equivalent to (dynamic path)
+composeReducer(decValue(
+  (state, action) => 'counter',
+  1
+));
+
+// equivalent to (dynamic value)
+composeReducer(decValue(
+ 'counter',
+ (state, action) => 1,
+));
+
+// equivalent to
+composeReducer(decValue(
+ (state, action) => 'counter',
+ (state, action) => 1,
+));
 ```
 
 #### `pushValue`
@@ -213,25 +257,54 @@ branchAction(
 ): ComposableReducer
 ```
 
-```js
-import { branchAction } from '@shantry/compose-reducer';
+```ts
+import { composeReducer, branchAction } from '@shantry/compose-reducer';
 
-branchAction({
+const reducer = composeReducer(branchAction({
   INC_COUNTER: incValue('counter', 1),
   DEC_COUNTER: decValue('counter', 1),
-});
+}));
+
+const initialState = { counter: 0 }
+reducer(initialState, { type: 'INC_COUNTER' }) // { counter: 1 }
+reducer(initialState, { type: 'DEC_COUNTER' }) // { counter: -1 }
 
 // equivalent to
-branchAction(
+composeReducer(branchAction(
   ['INC_COUNTER', incValue('counter', 1)],
   ['DEC_COUNTER', decValue('counter', 1)],
-);
+));
 
 // equivalent to
-branchAction(
+composeReducer(branchAction(
   [(state, action) => action.type === 'INC_COUNTER', incValue('counter', 1)],
   [(state, action) => action.type === 'DEC_COUNTER', decValue('counter', 1)],
-)
+))
+```
+
+Array branching may have a liste of action type or predicate before the actual reducer
+Type and predicate of a same stage will apply reducer only once
+
+```ts
+const reducer = composeReducer(branchAction(
+  [(state, action) => action.type === 'INC_COUNTER', 'INC_COUNTER', 'INCREASE', incValue('counter', 1)]
+));
+const initalState = { counter: 0 };
+reducer(initialState, 'INC_COUNTER'); // { counter: 1 }
+reducer(initialState, 'INCREASE'); // { counter: 1 }
+```
+
+In case predicate match in different stages, each reducer will be applied
+
+```ts
+const reducer = composeReducer(branchAction(
+  [(state, action) => action.type === 'INC_COUNTER', incValue('counter', 1)],
+  ['INC_COUNTER', 'INCREASE', incValue('counter', 1)]
+));
+
+const initalState = { counter: 0 }
+reducer(initialState, { type: 'INC_COUNTER' }); // { counter: 2 }
+reducer(initialState, { type: 'INCREASE' }); // { counter: 1 }
 ```
 
 ### Context
