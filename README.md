@@ -287,7 +287,6 @@ popValues(
 ```ts
 // reducer that will remove elem at index 1 of field 'array'
 const reducer = composeReducer(popValues('array', 1));
-
 // remove elem at index 1
 reducer({ array: ['hello', 'world', 'hel', 'wor'] }); // { array: ['hello', 'hel', 'wor']}
 // ignore if out of range
@@ -296,9 +295,9 @@ reducer({ array: [] }); // { array: [] }
 // reducer that will remove elem at index 1, 2 and 3 of field 'array'
 const reducer2 = composeReducer(popValues('array', [1, 2, 3]));
 // remove elem at index 1
-reducer({ array: ['hello', 'world', 'hel', 'wor'] }); // { array: ['hello']}
+reducer2({ array: ['hello', 'world', 'hel', 'wor'] }); // { array: ['hello']}
 // ignore index out of range
-reducer({ array: ['hello', 'world'] }); // { array: ['hello']}
+reducer2({ array: ['hello', 'world'] }); // { array: ['hello']}
 ```
 
 #### `normalize`
