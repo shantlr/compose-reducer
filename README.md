@@ -167,7 +167,7 @@ composeReducer(incValue(
  (state, action) => 1,
 ));
 
-// equivalent to
+// equivalent to (dynamic path and value)
 composeReducer(incValue(
  (state, action) => 'counter',
  (state, action) => 1,
@@ -200,7 +200,7 @@ composeReducer(decValue(
  (state, action) => 1,
 ));
 
-// equivalent to
+// equivalent to (dynamic path and value)
 composeReducer(decValue(
  (state, action) => 'counter',
  (state, action) => 1,
@@ -216,6 +216,31 @@ pushValue(
 ): ComposableReducer
 ```
 
+```ts
+const reducer = composeReducer(pushValue('array', 10));
+const initialState = { array: null };
+const nextState = reducer(initialState); // { array: [10] }
+reducer(nextState) // { array: [10, 10] }
+
+// equivalent to (dynamic path)
+composeReducer(pushValue(
+  (state, action) => 'array',
+  10
+));
+
+// equivalent to (dynamic value)
+composeReducer(pushValue(
+ 'array',
+ (state, action) => 10,
+));
+
+// equivalent to (dynamic path and value)
+composeReducer(pushValue(
+ (state, action) => 'array',
+ (state, action) => 10,
+));
+```
+
 #### `pushValues`
 
 ```ts
@@ -225,6 +250,31 @@ pushValues(
 ): ComposableReducer
 ```
 
+```ts
+const reducer = composeReducer(pushValues('array', [1, 2, 3]));
+const initialState = { array: null };
+const nextState = reducer(initialState); // { array: [1, 2, 3 }
+reducer(nextState) // { array: [1, 2, 3, 1, 2, 3] }
+
+// equivalent to (dynamic path)
+composeReducer(pushValues(
+  (state, action) => 'array',
+  [1, 2, 3]
+));
+
+// equivalent to (dynamic value)
+composeReducer(pushValues(
+ 'array',
+ (state, action) => [1, 2, 3],
+));
+
+// equivalent to (dynamic path and value)
+composeReducer(pushValues(
+ (state, action) => 'array',
+ (state, action) => [1, 2, 3],
+));
+```
+
 #### `popValues`
 
 ```ts
@@ -232,6 +282,23 @@ popValues(
   pathResolver: string | string[] | ((state: Object, action: Object) => string | string[])
   popedValueIndexesResolver: number | number[] | ((state: Object, action: Object) => number| number[])
 ): ComposableReducer
+```
+
+```ts
+// reducer that will remove elem at index 1 of field 'array'
+const reducer = composeReducer(popValues('array', 1));
+
+// remove elem at index 1
+reducer({ array: ['hello', 'world', 'hel', 'wor'] }); // { array: ['hello', 'hel', 'wor']}
+// ignore if out of range
+reducer({ array: [] }); // { array: [] }
+
+// reducer that will remove elem at index 1, 2 and 3 of field 'array'
+const reducer2 = composeReducer(popValues('array', [1, 2, 3]));
+// remove elem at index 1
+reducer({ array: ['hello', 'world', 'hel', 'wor'] }); // { array: ['hello']}
+// ignore index out of range
+reducer({ array: ['hello', 'world'] }); // { array: ['hello']}
 ```
 
 #### `normalize`
