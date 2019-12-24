@@ -9,6 +9,6 @@ export { incValue } from './reducers/incValue';
 export { decValue } from './reducers/decValue';
 
 export { popValues } from './reducers/popValues';
-export { pushValue, pushValues } from './reducers/pushValues';
+export { pushValues } from './reducers/pushValues';
 
 export { branch } from './reducers/branch';
