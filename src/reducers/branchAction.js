@@ -1,8 +1,8 @@
 import { createReducer } from '../helpers/createReducer';
 import { initial } from '../utils/initial';
 import { last } from '../utils/last';
-import { resolve } from '../helpers/resolve';
 import { isFunction } from '../utils/isFunction';
+import { resolve } from '../helpers/resolve';
 
 const addReducer = (actionMap, type, reducer) => {
   if (!actionMap[type]) {
@@ -13,26 +13,25 @@ const addReducer = (actionMap, type, reducer) => {
 };
 
 const predicateHandler = (predicate, reducer) => {
-  return createReducer(trackingState => {
-    if (resolve(predicate, trackingState)) {
-      reducer(trackingState);
+  return trackingState => {
+    if (predicate(trackingState)) {
+      return reducer(trackingState);
     }
-  });
+    return trackingState;
+  };
 };
 
 const actionMapToPredicate = actionMap => {
-  return createReducer(trackingState =>
-    Boolean(actionMap[[trackingState.action.type]])
-  );
+  return trackingState => Boolean(actionMap[[trackingState.action.type]]);
 };
 
 const actionMapToHandler = actionMap => {
-  return createReducer(trackingState => {
+  return trackingState => {
     const reducers = actionMap[trackingState.action.type];
     if (reducers) {
       reducers.forEach(reducer => reducer(trackingState));
     }
-  });
+  };
 };
 
 const addCurrentMapStep = acc => {
@@ -57,7 +56,8 @@ const typesToPredicate = types => {
 
   const typeMapPredicate = actionMapToPredicate(actionTypeMap);
   return trackingState =>
-    typeMapPredicate(trackingState) || predicates.some(p => p(trackingState));
+    typeMapPredicate(trackingState) ||
+    predicates.some(predicate => resolve(predicate, trackingState));
 };
 
 /**

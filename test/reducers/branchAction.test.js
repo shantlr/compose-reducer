@@ -107,6 +107,7 @@ describe('reducers', () => {
               [
                 (state, action) => action.type === 'INC',
                 'INC',
+                'INCREASE',
                 incValue(null, 1)
               ],
               [(state, action) => action.type === 'DEC', decValue(null, 1)]
