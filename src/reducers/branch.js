@@ -10,8 +10,10 @@ export const branch = (predicate, trueReducers, falseReducers) => {
 
   return createReducer(trackingState => {
     if (test(trackingState)) {
-      reduceTrueCase(trackingState);
-    } else {
+      if (reduceTrueCase) {
+        reduceTrueCase(trackingState);
+      }
+    } else if (reduceFalseCase) {
       reduceFalseCase(trackingState);
     }
   });
