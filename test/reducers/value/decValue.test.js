@@ -1,4 +1,4 @@
-import { composeReducer, decValue } from '../../src';
+import { composeReducer, decValue } from '../../../src';
 
 describe('reducers', () => {
   describe('value', () => {

@@ -1,4 +1,4 @@
-import { composeReducer, popValues } from '../../src';
+import { composeReducer, popValues } from '../../../src';
 
 describe('reducers', () => {
   describe('value', () => {

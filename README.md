@@ -22,8 +22,9 @@ Compose-reducer helps you create less verbose and more expressive reducer.
       - [branch](#branch)
       - [branchAction](#branchaction)
     - [Context](#context)
-      - [setContext](#setcontext)
-      - [scope](#scope)
+      - [withContext](#withcontext)
+      - [at](#at)
+    - [withAction](#withaction)
 
 ## Install
 
@@ -292,6 +293,8 @@ reducer2({ array: ['hello', 'world'] }); // { array: ['hello']}
 
 #### `normalize`
 
+WIP
+
 ### Flow composable reducer
 
 #### `branch`
@@ -365,6 +368,16 @@ reducer(initialState, { type: 'INCREASE' }); // { counter: 1 }
 
 ### Context
 
-#### `setContext`
+WIP
 
-#### `scope`
+#### `withContext`
+
+WIP
+
+#### `at`
+
+WIP
+
+### `withAction`
+
+WIP

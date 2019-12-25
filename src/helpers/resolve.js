@@ -9,29 +9,37 @@ export const resolve = (resolver, trackingState, additionalMeta) => {
   });
 };
 
+const relativePathResolver = (trackingState, path) => {
+  return [...trackingState.getPath(), ...(path || [])];
+};
+
+const staticRelativePathResolve = path => trackingState => {
+  return relativePathResolver(trackingState, path);
+};
+
 export const wrapPathResolver = pathResolver => {
   if (pathResolver == null) {
-    return () => [];
+    return staticRelativePathResolve([]);
   }
 
   if (isString(pathResolver)) {
-    return () => pathResolver.split('.');
+    return staticRelativePathResolve(pathResolver.split('.'));
   }
   if (Array.isArray(pathResolver)) {
-    return () => pathResolver;
+    return staticRelativePathResolve(pathResolver);
   }
   if (typeof pathResolver === 'number') {
-    return () => [pathResolver.toString()];
+    return staticRelativePathResolve([pathResolver.toString()]);
   }
 
   if (isFunction(pathResolver)) {
     return trackingState => {
       const path = resolve(pathResolver, trackingState);
       if (isString(path)) {
-        return path.split('.');
+        return relativePathResolver(trackingState, path.split('.'));
       }
       if (Array.isArray(path)) {
-        return path;
+        return relativePathResolver(trackingState, path);
       }
 
       throw new Error(
@@ -39,6 +47,8 @@ export const wrapPathResolver = pathResolver => {
       );
     };
   }
+
+  // could not wrap path resolver
   return null;
 };
 

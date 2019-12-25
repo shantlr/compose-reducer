@@ -1,4 +1,5 @@
 import { StateManager } from './stateManager';
+import { get } from '../../utils/get';
 
 export const ACTION_OVERRIDE_SYMBOL = Symbol('Action override symbol');
 export const PATH_OVERRIDE_SYMBOL = Symbol('Action override symbol');
@@ -22,7 +23,7 @@ export class TrackingState {
   }
 
   get action() {
-    return this.initialAction;
+    return this.context[ACTION_OVERRIDE_SYMBOL] || this.initialAction;
   }
 
   updateState(path, value) {
@@ -31,5 +32,13 @@ export class TrackingState {
 
   unsetState(path) {
     return this._stateManager.unsetState(path);
+  }
+
+  getPath() {
+    return this.context[PATH_OVERRIDE_SYMBOL] || [];
+  }
+
+  getContextValue(key) {
+    return get(this.context, key);
   }
 }
