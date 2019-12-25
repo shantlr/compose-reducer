@@ -1,6 +1,5 @@
 import { setValueBase } from './setValue';
-import { isNil } from '../utils/isNil';
-import { updateState } from '../helpers/updateState';
+import { isNil } from '../../utils/isNil';
 
 export const incValue = (pathResolver, valueResolver) =>
   setValueBase(
@@ -8,7 +7,7 @@ export const incValue = (pathResolver, valueResolver) =>
     valueResolver,
     (trackingState, path, value, oldValue) => {
       if (!isNil(value)) {
-        updateState(trackingState, path, value + (oldValue || 0));
+        trackingState.updateState(path, value + (oldValue || 0));
       }
     },
     'incValue'

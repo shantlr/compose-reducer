@@ -96,7 +96,7 @@ composeReducer(
 composeReducer(
   setValue(
     'field.nestedField',
-    (state, action) =>s 'hello world'
+    (state, action) => 'hello world'
   )
 );
 

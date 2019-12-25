@@ -1,7 +1,6 @@
 import { setValueBase } from './setValue';
-import { updateState } from '../helpers/updateState';
-import { resolve } from '../helpers/resolve';
-import { isIterable } from '../utils/isIterable';
+import { resolve } from '../../helpers/resolve';
+import { isIterable } from '../../utils/isIterable';
 
 const lastIndexResolver = (state, action, { oldValues }) => {
   if (oldValues) {
@@ -25,9 +24,11 @@ export const pushValues = (
 
       if (!oldValues || isIterable(oldValues)) {
         const index = resolve(indexResolver, trackingState, { oldValues });
+
         const nextValue = [...(oldValues || [])];
         nextValue.splice(index, 0, ...values);
-        updateState(trackingState, path, nextValue);
+
+        trackingState.updateState(path, nextValue);
       } else {
         throw new Error(
           `[pushValues] previous value is not iterable ${oldValues}`
@@ -49,9 +50,11 @@ export const pushValue = (
     (trackingState, path, value, oldValues) => {
       if (!oldValues || isIterable(oldValues)) {
         const index = resolve(indexResolver, trackingState, { oldValues });
+
         const nextValue = [...(oldValues || [])];
         nextValue.splice(index, 0, value);
-        updateState(trackingState, path, nextValue);
+
+        trackingState.updateState(path, nextValue);
       } else {
         throw new Error(
           `[pushValue] previous value is not iterable ${oldValues}`

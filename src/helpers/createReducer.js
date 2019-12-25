@@ -1,15 +1,10 @@
 import { pipe } from '../utils/pipe';
+import { TrackingState } from './trackingState';
 
 /**
  * Initialize tracking
  */
-const initTrackingState = (state, action) => ({
-  state,
-  nextState: state,
-  action,
-  isNewReference: {},
-  context: {}
-});
+const initTrackingState = (state, action) => new TrackingState(state, action);
 
 /**
  * Compose reducers

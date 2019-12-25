@@ -1,8 +1,8 @@
-import { createReducer } from '../helpers/createReducer';
-import { initial } from '../utils/initial';
-import { last } from '../utils/last';
-import { isFunction } from '../utils/isFunction';
-import { resolve } from '../helpers/resolve';
+import { createReducer } from '../../helpers/createReducer';
+import { initial } from '../../utils/initial';
+import { last } from '../../utils/last';
+import { isFunction } from '../../utils/isFunction';
+import { resolve } from '../../helpers/resolve';
 
 const addReducer = (actionMap, type, reducer) => {
   if (!actionMap[type]) {

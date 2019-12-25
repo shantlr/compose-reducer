@@ -1,6 +1,5 @@
 import { setValueBase } from './setValue';
-import { updateState } from '../helpers/updateState';
-import { isNil } from '../utils/isNil';
+import { isNil } from '../../utils/isNil';
 
 export const popValues = (pathResolver, indexesResolver) => {
   return setValueBase(
@@ -35,7 +34,7 @@ export const popValues = (pathResolver, indexesResolver) => {
       );
 
       if (nextArray.length < oldArray.length) {
-        updateState(trackingState, path, nextArray);
+        trackingState.updateState(path, nextArray);
       }
     },
     'popValues'

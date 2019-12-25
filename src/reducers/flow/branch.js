@@ -1,6 +1,6 @@
-import { createReducer } from '../helpers/createReducer';
-import { resolve } from '../helpers/resolve';
-import { wrapReducers } from '../helpers/wrapReducer';
+import { createReducer } from '../../helpers/createReducer';
+import { resolve } from '../../helpers/resolve';
+import { wrapReducers } from '../../helpers/wrapReducer';
 
 export const branch = (predicate, trueReducers, falseReducers) => {
   const reduceTrueCase = wrapReducers(trueReducers);

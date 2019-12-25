@@ -1,5 +1,4 @@
-import { composeReducer, incValue, decValue } from '../../src';
-import { branchAction } from '../../src/reducers/branchAction';
+import { composeReducer, branchAction, incValue, decValue } from '../../src';
 
 describe('reducers', () => {
   describe('flow', () => {

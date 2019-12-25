@@ -3,7 +3,7 @@ import { isFunction } from '../utils/isFunction';
 
 export const resolve = (resolver, trackingState, additionalMeta) => {
   return resolver(trackingState.nextState, trackingState.action, {
-    prevState: trackingState.state,
+    initialState: trackingState.initialState,
     context: trackingState.context,
     ...additionalMeta
   });
