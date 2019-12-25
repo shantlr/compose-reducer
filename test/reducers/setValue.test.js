@@ -171,6 +171,13 @@ describe('reducers', () => {
           expect(valueResolver.mock.calls[0][1]).toBe(action);
         });
       });
+
+      describe('when value resolver is not provided', () => {
+        it('should set action as value', () => {
+          const reducer = composeReducer(setValue(''));
+          expect(reducer('', 10)).toBe(10);
+        });
+      });
     });
   });
 });

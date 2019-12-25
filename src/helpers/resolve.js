@@ -47,5 +47,8 @@ export const wrapValueResolver = valueResolver => {
     return (trackingState, additionalMeta) =>
       resolve(valueResolver, trackingState, additionalMeta);
   }
+  if (valueResolver === undefined) {
+    return trackingState => trackingState.action;
+  }
   return () => valueResolver;
 };

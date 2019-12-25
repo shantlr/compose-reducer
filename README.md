@@ -70,37 +70,41 @@ Resolved value may be a static value (non function value) or a function that wil
 ```ts
 setValue(
   pathResolver: string | string[] | ((state: Object, action: Object) => string | string[])
-  valueResolver: (state: Object, action: Object) => any | any
+  valueResolver?: (state: Object, action: Object) => any | any
 ): ComposableReducer
 ```
-
-Set value using static path and static value:
-
-```ts
-import { composeReducer, setValue } from '@shantry/compose-reducer';
-
-const reducer = composeReducer(setValue('field.nestedField', 'hello world'));
-
-const initialState = {};
-const nextState = reducer(initialState);
-// nextState === { field: { nestedField: 'hello world' } }
-```
-
-Set value using dynamic path and dynamic value:
 
 ```ts
 import { composeReducer, setValue } from '@shantry/compose-reducer';
 
 const reducer = composeReducer(
-  setValue(
-    (state, action) => ['entites', action.payload.item.id],
-    (state, action) => action.payload.item,
-  )
-)
+  setValue('field.nestedField', 'hello world')
+);
 
-const initalState = { entites: { 1: { id: '1' } } };
-const nextState = reducer(initialState, { payload: { item: { id: '42' } } })
-// nextState === { entites: { 1: { id: '1' }, 42: { id: '42' } } }
+const initialState = {};
+reducer(initialState); // { field: { nestedField: 'hello world' } }
+
+//  equivalent to (dynamic path)
+composeReducer(
+  setValue(
+    (state, action) => 'field.nestedField',
+    'hello world'
+  )
+);
+
+// equivalent to (dynamic value)
+composeReducer(
+  setValue(
+    'field.nestedField',
+    (state, action) =>s 'hello world'
+  )
+);
+
+// In case value resolver is not provided, value will be resolved to given action
+const setSizeReducer = composeReducer(
+  setValue('size')
+);
+setSizeReducer({ size: 0 }, 10) // { size: 10 }
 ```
 
 #### `unsetValue`
@@ -111,8 +115,6 @@ unsetValue(
 ): ComposableReducer
 ```
 
-Static path
-
 ```ts
 import { composeReducer, unsetValue } from '@shantry/compose-reducer';
 
@@ -121,24 +123,14 @@ const reducer = composeReducer(
 )
 
 const initalState = { entites: { 1: { id: '1' }, 42: { id: '42' } } };
-const nextState = reducer(initialState)
-// nextState === { entites: { 42: { id: '42' } } }
-```
+reducer(initialState) // { entites: { 42: { id: '42' } } }
 
-Dynamic path
-
-```js
-import { composeReducer, unsetValue } from '@shantry/compose-reducer';
-
+// equivalent to (dynamic path)
 const reducer = composeReducer(
   unsetValue(
-    (state, action) => ['entites', action.payload.itemId],
+    (state, action) => 'entites.1',
   )
 )
-
-const initalState = { entites: { 1: { id: '1' }, 42: { id: '42' } } };
-const nextState = reducer(initialState, { payload: { itemId: '1' } })
-// nextState === { entites: { 42: { id: '42' } } }
 ```
 
 #### `incValue`
@@ -287,14 +279,12 @@ popValues(
 ```ts
 // reducer that will remove elem at index 1 of field 'array'
 const reducer = composeReducer(popValues('array', 1));
-// remove elem at index 1
 reducer({ array: ['hello', 'world', 'hel', 'wor'] }); // { array: ['hello', 'hel', 'wor']}
 // ignore if out of range
 reducer({ array: [] }); // { array: [] }
 
 // reducer that will remove elem at index 1, 2 and 3 of field 'array'
 const reducer2 = composeReducer(popValues('array', [1, 2, 3]));
-// remove elem at index 1
 reducer2({ array: ['hello', 'world', 'hel', 'wor'] }); // { array: ['hello']}
 // ignore index out of range
 reducer2({ array: ['hello', 'world'] }); // { array: ['hello']}
