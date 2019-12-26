@@ -1,10 +1,3 @@
-// import { createReducer } from '..';
-// import { wrapValueResolver } from '../helpers/resolve';
-// import { pipe } from '../utils/pipe';
+import { withActions } from '../context/withAction';
 
-// export const onEach = (arrayResolver, ...composableResolvers) => {
-//   createReducer(trackingState => {
-//     const resolveArray = wrapValueResolver(arrayResolver);
-//     // const array = resolveArray(trackingState);
-//   });
-// };
+export const onEach = withActions;
