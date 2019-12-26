@@ -1,4 +1,7 @@
-import { TrackingState } from '../../src/helpers/trackingState';
+import {
+  TrackingState,
+  PATH_OVERRIDE_SYMBOL
+} from '../../src/helpers/trackingState';
 import { wrapPathResolver } from '../../src/helpers/resolve';
 
 describe('helpers', () => {
@@ -59,6 +62,85 @@ describe('helpers', () => {
       expect(
         wrapPathResolver(() => ['field', 'subField'])(trackingState)
       ).toEqual(['field', 'subField']);
+    });
+
+    describe('with path context', () => {
+      beforeEach(() => {
+        trackingState.context[PATH_OVERRIDE_SYMBOL] = ['field', 'subField'];
+      });
+
+      it('should resolve with root path', () => {
+        expect(wrapPathResolver()(trackingState)).toEqual([
+          'field',
+          'subField'
+        ]);
+        expect(wrapPathResolver(null)(trackingState)).toEqual([
+          'field',
+          'subField'
+        ]);
+        expect(wrapPathResolver('')(trackingState)).toEqual([
+          'field',
+          'subField'
+        ]);
+        expect(wrapPathResolver(() => '')(trackingState)).toEqual([
+          'field',
+          'subField'
+        ]);
+        expect(wrapPathResolver(() => [])(trackingState)).toEqual([
+          'field',
+          'subField'
+        ]);
+      });
+
+      it('should resolve simple string path', () => {
+        expect(wrapPathResolver('field')(trackingState)).toEqual([
+          'field',
+          'subField',
+          'field'
+        ]);
+        expect(wrapPathResolver(() => 'field')(trackingState)).toEqual([
+          'field',
+          'subField',
+          'field'
+        ]);
+      });
+
+      it('should resolve nested string path', () => {
+        expect(wrapPathResolver('field.subField')(trackingState)).toEqual([
+          'field',
+          'subField',
+          'field',
+          'subField'
+        ]);
+        expect(
+          wrapPathResolver(() => 'field.subField')(trackingState)
+        ).toEqual(['field', 'subField', 'field', 'subField']);
+      });
+
+      it('should resolve simple array path', () => {
+        expect(wrapPathResolver(['field'])(trackingState)).toEqual([
+          'field',
+          'subField',
+          'field'
+        ]);
+        expect(wrapPathResolver(() => ['field'])(trackingState)).toEqual([
+          'field',
+          'subField',
+          'field'
+        ]);
+      });
+
+      it('should resolve nested string path', () => {
+        expect(wrapPathResolver(['field', 'subField'])(trackingState)).toEqual([
+          'field',
+          'subField',
+          'field',
+          'subField'
+        ]);
+        expect(
+          wrapPathResolver(() => ['field', 'subField'])(trackingState)
+        ).toEqual(['field', 'subField', 'field', 'subField']);
+      });
     });
   });
 });

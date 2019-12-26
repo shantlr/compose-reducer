@@ -1,5 +1,4 @@
 import { StateManager } from './stateManager';
-import { get } from '../../utils/get';
 
 export const ACTION_OVERRIDE_SYMBOL = Symbol('Action override symbol');
 export const PATH_OVERRIDE_SYMBOL = Symbol('Action override symbol');
@@ -36,9 +35,5 @@ export class TrackingState {
 
   getPath() {
     return this.context[PATH_OVERRIDE_SYMBOL] || [];
-  }
-
-  getContextValue(key) {
-    return get(this.context, key);
   }
 }
