@@ -21,7 +21,7 @@ Compose-reducer helps you create less verbose and more expressive reducer.
     - [Flow composable reducer](#flow-composable-reducer)
       - [branch](#branch)
       - [branchAction](#branchaction)
-    - [onEach](#oneach)
+      - [onEach](#oneach)
     - [Context](#context)
       - [withContext](#withcontext)
       - [at](#at)
@@ -368,7 +368,7 @@ reducer(initialState, { type: 'INC_COUNTER' }); // { counter: 2 }
 reducer(initialState, { type: 'INCREASE' }); // { counter: 1 }
 ```
 
-### `onEach`
+#### `onEach`
 
 Alias of [withActions](#withactions)
 
