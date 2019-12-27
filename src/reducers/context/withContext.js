@@ -13,7 +13,7 @@ export const withContextBase = (
     const oldContext = trackingState.context;
 
     // new context
-    trackingState.context = { ...oldContext, additionnalContext };
+    trackingState.context = { ...oldContext, ...additionnalContext };
 
     reducer(trackingState);
 
