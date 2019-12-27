@@ -21,10 +21,12 @@ Compose-reducer helps you create less verbose and more expressive reducer.
     - [Flow composable reducer](#flow-composable-reducer)
       - [branch](#branch)
       - [branchAction](#branchaction)
+    - [onEach](#oneach)
     - [Context](#context)
       - [withContext](#withcontext)
       - [at](#at)
     - [withAction](#withaction)
+    - [withActions](#withactions)
 
 ## Install
 
@@ -70,8 +72,8 @@ Resolved value may be a static value (non function value) or a function that wil
 
 ```ts
 setValue(
-  pathResolver: string | string[] | ((state: Object, action: Object) => string | string[])
-  valueResolver?: (state: Object, action: Object) => any | any
+  pathResolver: string | string[] | ((state: any, action: any, context: object) => string | string[])
+  valueResolver?: (state: any, action: any, context: object) => any | any
 ): ComposableReducer
 ```
 
@@ -112,7 +114,7 @@ setSizeReducer({ size: 0 }, 10) // { size: 10 }
 
 ```ts
 unsetValue(
-  pathResolver: String | () => String
+  pathResolver: string | (state: any, action: any, context: object) => string
 ): ComposableReducer
 ```
 
@@ -138,8 +140,8 @@ const reducer = composeReducer(
 
 ```ts
 incValue(
-  pathResolver: string | string[] | ((state: Object, action: Object) => string | string[])
-  incValueResolver: (state: Object, action: Object) => any | any
+  pathResolver: string | string[] | ((state: any, action: any, context: object) => string | string[])
+  incValueResolver: number | (state: any, action: any, context: object) => number
 ): ComposableReducer
 ```
 
@@ -171,8 +173,8 @@ composeReducer(incValue(
 
 ```ts
 decValue(
-  pathResolver: string | string[] | ((state: Object, action: Object) => string | string[])
-  decValueResolver: (state: Object, action: Object) => any | any
+  pathResolver: string | string[] | ((state: any, action: any, context: object) => string | string[])
+  decValueResolver: number | (state: any, action: any, context: object) => number
 ): ComposableReducer
 ```
 
@@ -204,8 +206,8 @@ composeReducer(decValue(
 
 ```ts
 pushValue(
-  pathResolver: string | string[] | ((state: Object, action: Object) => string | string[])
-  pushedValueResolver: (state: Object, action: Object) => any | any
+  pathResolver: string | string[] | ((state: any, action: any, context: object) => string | string[])
+  pushedValueResolver: (state: any, action: any, context: object) => any | any
 ): ComposableReducer
 ```
 
@@ -238,8 +240,8 @@ composeReducer(pushValue(
 
 ```ts
 pushValues(
-  pathResolver: string | string[] | ((state: Object, action: Object) => string | string[])
-  pushedValuesResolver: (state: Object, action: Object) => any[] | any
+  pathResolver: string | string[] | ((state: any, action: any, context: object) => string | string[])
+  pushedValuesResolver: (state: any, action: any, context: object) => any[] | any
 ): ComposableReducer
 ```
 
@@ -272,8 +274,8 @@ composeReducer(pushValues(
 
 ```ts
 popValues(
-  pathResolver: string | string[] | ((state: Object, action: Object) => string | string[])
-  popedValueIndexesResolver: number | number[] | ((state: Object, action: Object) => number| number[])
+  pathResolver: string | string[] | ((state: any, action: any, context: object) => string | string[])
+  popedValueIndexesResolver: number | number[] | ((state: any, action: any, context: object) => number| number[])
 ): ComposableReducer
 ```
 
@@ -301,7 +303,7 @@ WIP
 
 ```ts
 branch(
-  predicate: (state: Object, action: Object) => boolean
+  predicate: (state: any, action: any, context: object) => boolean
   trueReducer?: ComposableReducer
   falseReducer?: ComposableReducer
 ): ComposableReducer
@@ -312,7 +314,7 @@ branch(
 ```ts
 branchAction(
   ...branches: Map<string, ComposableReducer>
-               | [...(string | (state: Object, action: Object) => bool), ComposableReducer]
+               | [...(string | (state: any, action: any, context: object) => bool), ComposableReducer]
 ): ComposableReducer
 ```
 
@@ -366,18 +368,97 @@ reducer(initialState, { type: 'INC_COUNTER' }); // { counter: 2 }
 reducer(initialState, { type: 'INCREASE' }); // { counter: 1 }
 ```
 
+### onEach
+
+Alias of [withActions](#withactions)
+
 ### Context
 
-WIP
+In some cases it is convenient to be able to reuse a previously computed value in multiple sub reducer
+This is possible through context.
 
 #### `withContext`
 
-WIP
+Add some values to context
+Added values are scoped, only accessible in sub (given) composableReducers
+
+```ts
+withContext(
+  contextResolver: (state: any, action: any, context: object) => object | object,
+  ...composableReducers: ComposableReducer[]
+): ComposableReducer
+```
+
+```ts
+const reducer = composeReducer(
+  withContext(
+    (state, action) => ({
+      id: `${action.payload.type}::${action.payload.id}`,
+    }),
+    setValue(
+      (state, action, context) => ['entities', context.id],
+      (state, action) => action.payload,
+    ),
+    pushValue(
+      (state, action) => ['ids', action.payload.type],
+      (state, action, context) => context.id,,
+    )
+  ),
+)
+
+const initialState = { entites: { 'car:1': { id: 1, type: 'car', name: '#001'  } }, ids: { car: ['car:1'] } }
+reducer(initialState, { payload: { type: 'bus', id: 1, name: '#001' } })
+// {
+//    entities: { 'car:1': { ... }, 'bus:1': { type: 'bus', id: 1, name: '#001' } }
+//    ids: { car: ['car:1'], bus: ['bus:1'] }
+// }
+```
 
 #### `at`
 
-WIP
+`at` update a builtin context variable that is used as root path for each provided value composable reducer
+Resolved path is scoped and added to current path, only sub (given) composable reducers will work on new current path
+
+```ts
+at(
+  pathResolver: string | (state: any, action: any, context: object) => string,
+  ...composableReducers: ComposableReducer[]
+): ComposableReducer
+```
+
+```ts
+const reducer = composeReducer(
+  at(
+    'field',
+    incValue('counter', 10) // will be applied to 'field'
+    at(
+      'subfield',
+      incValue('counter', 200), // will be applied to 'field.subfield'
+    )
+  ),
+  incValue('counter', 5) // is not affected by at
+)
+
+reducer({ counter: 0, field: { counter: 0, subfield: { counter: 0 } } }) // { counter: 5, field: { counter: 10, subfield: { counter: 200 } }  }
+```
 
 ### `withAction`
 
-WIP
+Replace action of all sub (given) composable reducers
+
+```ts
+withAction(
+  actionResolver: any | (state: any, action: any, context: object) => any,
+  ...composableReducers: ComposableReducer[]
+): ComposableReducer
+```
+
+### `withActions`
+
+```ts
+withActions(
+  actionResolver: any | (state: any, action: any, context: object) => any[],
+  ...composableReducers: ComposableReducer[]
+): ComposableReducer
+```
+

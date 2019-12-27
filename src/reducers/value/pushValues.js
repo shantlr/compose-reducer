@@ -2,7 +2,7 @@ import { setValueBase } from './setValue';
 import { resolve } from '../../helpers/resolve';
 import { isIterable } from '../../utils/isIterable';
 
-const lastIndexResolver = (state, action, { oldValues }) => {
+const lastIndexResolver = (state, action, context, { oldValues }) => {
   if (oldValues) {
     return oldValues.length || 0;
   }

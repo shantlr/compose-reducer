@@ -3,11 +3,15 @@ import { isFunction } from '../utils/isFunction';
 import { isRootPath } from '../utils/isRootPath';
 
 export const resolve = (resolver, trackingState, additionalMeta) => {
-  return resolver(trackingState.nextState, trackingState.action, {
-    initialState: trackingState.initialState,
-    context: trackingState.context,
-    ...additionalMeta
-  });
+  return resolver(
+    trackingState.nextState,
+    trackingState.action,
+    trackingState.context,
+    {
+      initialState: trackingState.initialState,
+      ...additionalMeta
+    }
+  );
 };
 
 const relativePathResolver = (trackingState, path) => {
