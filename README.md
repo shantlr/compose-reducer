@@ -368,18 +368,19 @@ reducer(initialState, { type: 'INC_COUNTER' }); // { counter: 2 }
 reducer(initialState, { type: 'INCREASE' }); // { counter: 1 }
 ```
 
-### onEach
+### `onEach`
 
 Alias of [withActions](#withactions)
 
 ### Context
 
-In some cases it is convenient to be able to reuse a previously computed value in multiple sub reducer
+In some cases it is convenient to be able to reuse a previously computed value in multiple sub reducer.
 This is possible through context.
 
 #### `withContext`
 
 Add some values to context
+
 Added values are scoped, only accessible in sub (given) composableReducers
 
 ```ts
@@ -417,6 +418,7 @@ reducer(initialState, { payload: { type: 'bus', id: 1, name: '#001' } })
 #### `at`
 
 `at` update a builtin context variable that is used as root path for each provided value composable reducer
+
 Resolved path is scoped and added to current path, only sub (given) composable reducers will work on new current path
 
 ```ts
