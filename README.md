@@ -1,8 +1,8 @@
 # compose-reducer
 
-[WIP]
-
 Compose-reducer helps you create less verbose and more expressive reducer.
+
+Compose-reducer 
 
 - [compose-reducer](#compose-reducer)
   - [Install](#install)
@@ -29,7 +29,7 @@ Compose-reducer helps you create less verbose and more expressive reducer.
 
 ## Install
 
-...
+`yarn add compose-reducer`
 
 ## Api
 
@@ -44,14 +44,16 @@ This function create a reducer with given pipeline of [composable reducer](#comp
 Composable reducer will be applied in given order.
 
 ```ts
-  const reducer = composeReducer(
-    incValue('counter1', 1),  // increase counter1 field by 1
-    incValue('counter2', 10), // then increase counter2 field by 10
-    incValue('counter1', 5),  // then increase counter1 field by 5
-  );
+import { composeReducer, incValue } from 'compose-reducer';
 
-  const initalState = { counter1: 0, counter2: 2 };
-  reducer(initialState); // { counter1: 6, counter2: 12 }
+const reducer = composeReducer(
+  incValue('counter1', 1),  // increase counter1 field by 1
+  incValue('counter2', 10), // then increase counter2 field by 10
+  incValue('counter1', 5),  // then increase counter1 field by 5
+);
+
+const initalState = { counter1: 0, counter2: 2 };
+reducer(initialState); // { counter1: 6, counter2: 12 }
 ```
 
 ### Composable Reducer
@@ -76,7 +78,7 @@ setValue(
 ```
 
 ```ts
-import { composeReducer, setValue } from '@shantry/compose-reducer';
+import { composeReducer, setValue } from 'compose-reducer';
 
 const reducer = composeReducer(
   setValue('field.nestedField', 'hello world')
@@ -117,7 +119,7 @@ unsetValue(
 ```
 
 ```ts
-import { composeReducer, unsetValue } from '@shantry/compose-reducer';
+import { composeReducer, unsetValue } from 'compose-reducer';
 
 const reducer = composeReducer(
   unsetValue('entities.1')
@@ -144,6 +146,8 @@ incValue(
 ```
 
 ```ts
+import { composeReducer, incValue } from 'compose-reducer';
+
 const reducer = composeReducer(incValue('counter', 1));
 const initialState = { counter: 0 };
 reducer(initialState); // { counter: 1 }
@@ -177,6 +181,8 @@ decValue(
 ```
 
 ```ts
+import { composeReducer, decValue } from 'compose-reducer';
+
 const reducer = composeReducer(decValue('counter', 1));
 const initialState = { counter: 0 };
 reducer(initialState); // { counter: -1 }
@@ -210,6 +216,8 @@ pushValue(
 ```
 
 ```ts
+import { composeReducer, pushValue } from 'compose-reducer';
+
 const reducer = composeReducer(pushValue('array', 10));
 const initialState = { array: null };
 const nextState = reducer(initialState); // { array: [10] }
@@ -244,6 +252,8 @@ pushValues(
 ```
 
 ```ts
+import { composeReducer, pushValues } from 'compose-reducer';
+
 const reducer = composeReducer(pushValues('array', [1, 2, 3]));
 const initialState = { array: null };
 const nextState = reducer(initialState); // { array: [1, 2, 3 }
@@ -278,6 +288,8 @@ popValues(
 ```
 
 ```ts
+import { composeReducer, popValues } from 'compose-reducer';
+
 // reducer that will remove elem at index 1 of field 'array'
 const reducer = composeReducer(popValues('array', 1));
 reducer({ array: ['hello', 'world', 'hel', 'wor'] }); // { array: ['hello', 'hel', 'wor']}
@@ -313,7 +325,7 @@ branchAction(
 ```
 
 ```ts
-import { composeReducer, branchAction } from '@shantry/compose-reducer';
+import { composeReducer, branchAction, incValue, decValue } from 'compose-reducer';
 
 const reducer = composeReducer(branchAction({
   INC_COUNTER: incValue('counter', 1),
@@ -369,17 +381,19 @@ Apply all given composable reducer with resolved value as action.
 This may be usefull to map input state/action for easier reducer reusability.
 
 ```ts
-withAction(
+mapAction(
   actionResolver: any | (state: any, action: any, context: object) => any,
   ...composableReducers: ComposableReducer[]
 ): ComposableReducer
 ```
 
 ```ts
+import { composeReducer, mapAction, setValue } from 'compose-reducer';
+
 const reducer = composeReducer(
-  withAction(
+  mapAction(
     (state, action) => action.payload,
-    setValue('field')
+    setValue('field') // received action will be field 'payload' of initial action
   ),
 )
 
@@ -391,15 +405,17 @@ reducer({ field: 0 }, { payload: 100 }) // { field: 100 }
 Apply all given composable reducers on each resolved action
 
 ```ts
-withActions(
+mapActions(
   actionResolver: any | (state: any, action: any, context: object) => any[],
   ...composableReducers: ComposableReducer[]
 ): ComposableReducer
 ```
 
 ```ts
+import { composeReducer, mapActions, setValue, pushValue } from 'compose-reducer';
+
 const reducer = composeReducer(
-  withActions(
+  mapActions(
     (state, action) => action.items,
     setValue(
       (state, action) => ['entities', action.id],
@@ -423,6 +439,8 @@ reducer({ entities: {}, ids: [] }, { items: [{ id: 1, name: 'item 1' }, { id: 2,
 Alias of [withActions](#withactions)
 
 ```ts
+import { composeReducer, onEach, setValue, pushValue } from 'compose-reducer';
+
 const reducer = composeReducer(
   onEach(
     (state, action) => action.items,
@@ -462,6 +480,8 @@ withContext(
 ```
 
 ```ts
+import { composeReducer, withContext, setValue, pushValue } from 'compose-reducer';
+
 const reducer = composeReducer(
   withContext(
     (state, action) => ({
@@ -500,6 +520,8 @@ at(
 ```
 
 ```ts
+import { composeReducer, at, incValue } from 'compose-reducer';
+
 const reducer = composeReducer(
   at(
     'field',
