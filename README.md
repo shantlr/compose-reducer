@@ -4,6 +4,10 @@ Compose-reducer helps you create less verbose and more expressive reducer.
 
 - [compose-reducer](#compose-reducer)
   - [Install](#install)
+  - [Examples](#examples)
+    - [Update state](#update-state)
+    - [Branch given action type](#branch-given-action-type)
+    - [Normalize](#normalize)
   - [Api](#api)
     - [composeReducer](#composereducer)
     - [Composable Reducer](#composable-reducer)
@@ -28,6 +32,93 @@ Compose-reducer helps you create less verbose and more expressive reducer.
 ## Install
 
 `yarn add compose-reducer`
+
+## Examples
+
+Here some usage of compose-reducer
+
+### Update state
+
+Update part of your state in a expressive and not verbose way.
+
+```js
+const reducer = composeReducer(
+  setValue('field.subfield.value', (state, action) => action.payload)
+);
+
+// equivalent to
+(state, action) => {
+  return {
+    ...state,
+    field: {
+      ...state.field,
+      subfield: {
+        ...state.field.subfield,
+        value: action.payload
+      }
+    }
+  }
+}
+```
+
+### Branch given action type
+
+```js
+const reducer = composeReducer(
+  brancheAction({
+    INCREASE_COUNTER: incValue('counter', 1),
+    DECREASE_COUNTER: decValue('counter', 1),
+    DYNAMIC_INCREASE_COUNTER: incValue('counter', (state, action) => action.payload),
+  })
+);
+
+// equivalent to
+(state, action) => {
+  switch (action.type) {
+    case 'INCREASE_COUNTER':
+      return { ...state, counter: (state.counter || 0) + 1 };
+    case 'INCREASE_COUNTER':
+      return { ...state, counter: (state.counter || 0) - 1 };
+    case 'DYNAMIC_INCREASE_COUNTER':
+      return { ...state, counter: (state.counter || 0) + action.payload }
+  }
+}
+```
+
+### Normalize
+
+It is very simple to normalize array of entities into normalized structure
+
+```js
+const reducer = composeReducer(
+  onEach(
+    (state, action) => action.entities,
+    // next composable reducers will be called with each entity as action
+
+    setValue(
+      (state, action) => ['entities', action.id], // dynamically compute path
+      // if value resolver is not provided, action will be used as action
+    ),
+
+    // we also push each entity id into 'ids' field
+    pushValue('ids', (state, action) => action.id)
+  )
+)
+
+// equivalent to
+(state, action) => {
+  return {
+    ...state,
+    entities: action.entities.reduce((entities, entity) => {
+      return {
+        ...entities,
+        [entity.id]: entity,
+      }
+    }, state.entities),
+    ids: state.ids.concat(action.entities.map(({ id }) => id))
+  }
+}
+```
 
 ## Api
 
