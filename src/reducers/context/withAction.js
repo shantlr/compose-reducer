@@ -19,14 +19,21 @@ export const withActions = (actionsResolver, ...composableReducers) => {
   return createReducer(trackingState => {
     const actions = resolveActions(trackingState);
 
-    actions.forEach((action, index) => {
+    const resolve = (action, index) =>
       withContextBase(
         () => ({
           [ACTION_OVERRIDE_SYMBOL]: action,
-          actionIndex: index
+          actionKey: index
         }),
         composableReducers
       )(trackingState);
-    });
+
+    if (Array.isArray(actions)) {
+      actions.forEach(resolve);
+    } else if (typeof actions === 'object') {
+      Object.keys(actions).forEach(key => {
+        resolve(actions[key], key);
+      });
+    }
   });
 };

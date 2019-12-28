@@ -17,7 +17,6 @@ Compose-reducer helps you create less verbose and more expressive reducer.
       - [pushValue](#pushvalue)
       - [pushValues](#pushvalues)
       - [popValues](#popvalues)
-      - [normalize](#normalize)
     - [Flow composable reducer](#flow-composable-reducer)
       - [branch](#branch)
       - [branchAction](#branchaction)
@@ -289,13 +288,9 @@ reducer({ array: [] }); // { array: [] }
 // reducer that will remove elem at index 1, 2 and 3 of field 'array'
 const reducer2 = composeReducer(popValues('array', [1, 2, 3]));
 reducer2({ array: ['hello', 'world', 'hel', 'wor'] }); // { array: ['hello']}
-// ignore index out of range
+// ignore out of range indexes
 reducer2({ array: ['hello', 'world'] }); // { array: ['hello']}
 ```
-
-#### `normalize`
-
-WIP
 
 ### Flow composable reducer
 
