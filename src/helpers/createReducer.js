@@ -21,6 +21,11 @@ export const composeReducer = (...composableReducers) => {
  * Create a tracking state given reducer
  */
 export const createReducer = reduce => trackingState => {
+  if (!(trackingState instanceof TrackingState)) {
+    throw new Error(
+      'Invalid tracking state. Did you use composable-reducer without composeReducer ?'
+    );
+  }
   reduce(trackingState);
   return trackingState;
 };
