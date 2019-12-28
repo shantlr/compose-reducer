@@ -6,9 +6,13 @@ import { resolve } from '../../helpers/resolve';
 
 const addReducer = (actionMap, type, reducer) => {
   if (!actionMap[type]) {
-    actionMap[type] = [reducer];
-  } else {
+    actionMap[type] = [];
+  }
+
+  if (isFunction(reducer)) {
     actionMap[type].push(reducer);
+  } else if (Array.isArray(reducer)) {
+    actionMap[type].push(...reducer);
   }
 };
 

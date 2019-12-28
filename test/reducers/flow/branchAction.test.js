@@ -57,6 +57,16 @@ describe('reducers', () => {
           expect(reducer(0, { type: 'OTHER' })).toBe(0);
           expect(reducer(0, { type: 'ACT' })).toBe(6);
         });
+
+        it('should call array of reducers', () => {
+          const reducer = composeReducer(
+            branchAction({
+              ACT: [incValue(null, 1), incValue(null, 5)]
+            })
+          );
+          expect(reducer(0, { type: 'OTHER' })).toBe(0);
+          expect(reducer(0, { type: 'ACT' })).toBe(6);
+        });
       });
 
       describe('array branching', () => {

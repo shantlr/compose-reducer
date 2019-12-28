@@ -410,7 +410,7 @@ branch(
 
 ```ts
 branchAction(
-  ...branches: Map<string, ComposableReducer>
+  ...branches: Map<string, ComposableReducer | ComposableReducer[]>
                | [...(string | (state: any, action: any, context: object) => bool), ComposableReducer]
 ): ComposableReducer
 ```
