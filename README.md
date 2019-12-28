@@ -372,6 +372,27 @@ reducer(initialState, { type: 'INCREASE' }); // { counter: 1 }
 
 Alias of [withActions](#withactions)
 
+```ts
+const reducer = composeReducer(
+  onEach(
+    (state, action) => action.items,
+    setValue(
+      (state, action) => ['entities', action.id],
+    ),
+    pushValue(
+      'ids',
+      (state, action) => action.id,
+    )
+  )
+)
+
+reducer({ entities: {}, ids: [] }, { items: [{ id: 1, name: 'item 1' }, { id: 2, name: 'item 2' }, { id: 3, name: 'item 3' }] })
+// {
+//   entities: { 1: { id: 1, name: 'item 1' }, 2: { id: 2, name: 'item 2' }, 3: { id: 3, name: 'item 3' } } }
+//   ids: [1, 2, 3]
+// }
+```
+
 ### Context
 
 In some cases it is convenient to be able to reuse a previously computed value in multiple sub reducer.
