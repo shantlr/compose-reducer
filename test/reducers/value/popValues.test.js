@@ -1,17 +1,17 @@
-import { composeReducer, popValues } from '../../../src';
+import { composeReducers, popValues } from '../../../src';
 
 describe('reducers', () => {
   describe('value', () => {
     describe('popValues', () => {
       it('should pop values to root value', () => {
-        const reducer = composeReducer(popValues('', 1));
+        const reducer = composeReducers(popValues('', 1));
         expect(reducer(null)).toEqual(null);
         expect(reducer([1])).toEqual([1]);
         expect(reducer([3, 2, 1])).toEqual([3, 1]);
       });
 
       it('should pop array of values to root value', () => {
-        const reducer = composeReducer(popValues('', [0, 1]));
+        const reducer = composeReducers(popValues('', [0, 1]));
         expect(reducer(null)).toEqual(null);
         expect(reducer([1])).toEqual([]);
         expect(reducer([3, 2, 1])).toEqual([1]);
@@ -27,7 +27,7 @@ describe('reducers', () => {
           );
         });
         it('should throw an error when previous value is invalid', () => {
-          const reducer = composeReducer(popValues('', 10));
+          const reducer = composeReducers(popValues('', 10));
 
           const state = { hello: 'world' };
           const action = { type: 'ACTION' };
@@ -37,7 +37,7 @@ describe('reducers', () => {
         });
 
         it('should do nothing when index is -1', () => {
-          const reducer = composeReducer(popValues('field1.subField1', -1));
+          const reducer = composeReducers(popValues('field1.subField1', -1));
           const state = {
             field1: {
               subField1: [1, 2, 3, 4],
@@ -65,7 +65,7 @@ describe('reducers', () => {
         });
 
         it('should do nothing when index is out of scope', () => {
-          const reducer = composeReducer(popValues('field1.subField1', 10));
+          const reducer = composeReducers(popValues('field1.subField1', 10));
           const state = {
             field1: {
               subField1: [1, 2, 3, 4],
@@ -93,7 +93,7 @@ describe('reducers', () => {
         });
 
         it('should pop value when path is a nested string path', () => {
-          const reducer = composeReducer(popValues('field1.subField1', 2));
+          const reducer = composeReducers(popValues('field1.subField1', 2));
           const state = {
             field1: {
               subField1: [1, 2, 3, 4],
@@ -121,7 +121,7 @@ describe('reducers', () => {
         });
 
         it('should pop value when path is an array', () => {
-          const reducer = composeReducer(popValues(['field1'], 0));
+          const reducer = composeReducers(popValues(['field1'], 0));
           const state = {
             field1: [10, 15],
             field2: {},
@@ -140,7 +140,7 @@ describe('reducers', () => {
         });
 
         it('should pop value when path is a multi-level array path', () => {
-          const reducer = composeReducer(
+          const reducer = composeReducers(
             popValues(['field1', 'subField1', 'subSubField'], 2)
           );
           const state = {
@@ -172,7 +172,7 @@ describe('reducers', () => {
       describe('when path is dynamic', () => {
         it('should call path resolver with state and action', () => {
           const pathResolver = jest.fn().mockReturnValue('');
-          const reducer = composeReducer(popValues(pathResolver, 10));
+          const reducer = composeReducers(popValues(pathResolver, 10));
 
           const state = [];
           const action = { type: 'ACTION' };
@@ -185,7 +185,7 @@ describe('reducers', () => {
 
         it('should throw an error when resolved path is invalid', () => {
           const pathResolver = jest.fn().mockReturnValue(42);
-          const reducer = composeReducer(popValues(pathResolver, 10));
+          const reducer = composeReducers(popValues(pathResolver, 10));
           expect(reducer).toThrow(
             '[path-resolver] Resolved path is expected to be a string or an array of string but received'
           );
@@ -193,7 +193,7 @@ describe('reducers', () => {
 
         it('should pop value when path is field name', () => {
           const pathResolver = jest.fn().mockReturnValue('field1');
-          const reducer = composeReducer(popValues(pathResolver, 0));
+          const reducer = composeReducers(popValues(pathResolver, 0));
           const state = {
             field1: [123],
             field2: {},
@@ -212,7 +212,7 @@ describe('reducers', () => {
         });
         it('should pop value when path is a multi-level string path', () => {
           const pathResolver = jest.fn().mockReturnValue('field1.subField1');
-          const reducer = composeReducer(popValues(pathResolver, 1));
+          const reducer = composeReducers(popValues(pathResolver, 1));
           const state = {
             field1: {
               subField1: [1, 2, 3],
@@ -237,7 +237,7 @@ describe('reducers', () => {
 
         it('should pop value when path is an array', () => {
           const pathResolver = jest.fn().mockReturnValue(['field1']);
-          const reducer = composeReducer(popValues(pathResolver, 0));
+          const reducer = composeReducers(popValues(pathResolver, 0));
           const state = {
             field1: [2, 10],
             field2: {},
@@ -259,7 +259,7 @@ describe('reducers', () => {
           const pathResolver = jest
             .fn()
             .mockReturnValue(['field1', 'subField1']);
-          const reducer = composeReducer(popValues(pathResolver, 0));
+          const reducer = composeReducers(popValues(pathResolver, 0));
           const state = {
             field1: {
               subField1: [123],
@@ -288,7 +288,7 @@ describe('reducers', () => {
 
       it('should call value resolver with state and action', () => {
         const valueResolver = jest.fn().mockReturnValue(42);
-        const reducer = composeReducer(popValues('', valueResolver));
+        const reducer = composeReducers(popValues('', valueResolver));
 
         const state = [];
         const action = { type: 'ACTION' };

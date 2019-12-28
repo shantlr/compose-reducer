@@ -1,10 +1,10 @@
-import { unsetValue, composeReducer } from '../../../src';
+import { unsetValue, composeReducers } from '../../../src';
 
 describe('reducers', () => {
   describe('value', () => {
     describe('unsetValue', () => {
       it('should unset root', () => {
-        const reducer = composeReducer(unsetValue(''));
+        const reducer = composeReducers(unsetValue(''));
         expect(reducer({ hello: 'world' })).toEqual(undefined);
       });
 
@@ -19,7 +19,7 @@ describe('reducers', () => {
         });
 
         it('should remove field when path is field name', () => {
-          const reducer = composeReducer(unsetValue('field1'));
+          const reducer = composeReducers(unsetValue('field1'));
           const state = { field1: {}, field2: {}, field3: { hello: 'world' } };
 
           const nextState = reducer(state);
@@ -33,7 +33,7 @@ describe('reducers', () => {
         });
 
         it('should remove field when path is a nested string path', () => {
-          const reducer = composeReducer(unsetValue('field1.subField1'));
+          const reducer = composeReducers(unsetValue('field1.subField1'));
           const state = {
             field1: {
               subField1: { hello: '42' },
@@ -57,7 +57,7 @@ describe('reducers', () => {
         });
 
         it('should remove field when path is an array', () => {
-          const reducer = composeReducer(unsetValue(['field1']));
+          const reducer = composeReducers(unsetValue(['field1']));
           const state = { field1: {}, field2: {}, field3: { hello: 'world' } };
 
           const nextState = reducer(state);
@@ -71,7 +71,7 @@ describe('reducers', () => {
         });
 
         it('should remove field when path is a multi-level array path', () => {
-          const reducer = composeReducer(unsetValue(['field1', 'subField1']));
+          const reducer = composeReducers(unsetValue(['field1', 'subField1']));
           const state = {
             field1: {
               subField1: { hello: '42' },
@@ -98,7 +98,7 @@ describe('reducers', () => {
       describe('when path is dynamic', () => {
         it('should call path resolver with state and action', () => {
           const pathResolver = jest.fn().mockReturnValue('');
-          const reducer = composeReducer(unsetValue(pathResolver));
+          const reducer = composeReducers(unsetValue(pathResolver));
 
           const state = { hello: 'world' };
           const action = { type: 'ACTION' };
@@ -111,7 +111,7 @@ describe('reducers', () => {
 
         it('should throw an error when resolved path is invalid', () => {
           const pathResolver = jest.fn().mockReturnValue(42);
-          const reducer = composeReducer(unsetValue(pathResolver));
+          const reducer = composeReducers(unsetValue(pathResolver));
           expect(reducer).toThrow(
             '[path-resolver] Resolved path is expected to be a string or an array of string but received'
           );
@@ -119,7 +119,7 @@ describe('reducers', () => {
 
         it('should remove field when path is field name', () => {
           const pathResolver = jest.fn().mockReturnValue('field1');
-          const reducer = composeReducer(unsetValue(pathResolver));
+          const reducer = composeReducers(unsetValue(pathResolver));
           const state = { field1: {}, field2: {}, field3: { hello: 'world' } };
 
           const nextState = reducer(state);
@@ -133,7 +133,7 @@ describe('reducers', () => {
         });
         it('should remove field when path is a multi-level string path', () => {
           const pathResolver = jest.fn().mockReturnValue('field1.subField1');
-          const reducer = composeReducer(unsetValue(pathResolver));
+          const reducer = composeReducers(unsetValue(pathResolver));
           const state = {
             field1: {
               subField1: { hello: '42' },
@@ -158,7 +158,7 @@ describe('reducers', () => {
 
         it('should remove field when path is an array', () => {
           const pathResolver = jest.fn().mockReturnValue(['field1']);
-          const reducer = composeReducer(unsetValue(pathResolver));
+          const reducer = composeReducers(unsetValue(pathResolver));
           const state = { field1: {}, field2: {}, field3: { hello: 'world' } };
 
           const nextState = reducer(state);
@@ -175,7 +175,7 @@ describe('reducers', () => {
           const pathResolver = jest
             .fn()
             .mockReturnValue(['field1', 'subField1']);
-          const reducer = composeReducer(unsetValue(pathResolver));
+          const reducer = composeReducers(unsetValue(pathResolver));
           const state = {
             field1: {
               subField1: { hello: '42' },

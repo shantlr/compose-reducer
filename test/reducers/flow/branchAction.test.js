@@ -1,11 +1,16 @@
-import { composeReducer, branchAction, incValue, decValue } from '../../../src';
+import {
+  composeReducers,
+  branchAction,
+  incValue,
+  decValue
+} from '../../../src';
 
 describe('reducers', () => {
   describe('flow', () => {
     describe('branchAction', () => {
       describe('with object branching', () => {
         it('should reduce given action', () => {
-          const reducer = composeReducer(
+          const reducer = composeReducers(
             branchAction({
               INC: incValue(null, 1),
               DEC: decValue(null, 1)
@@ -17,7 +22,7 @@ describe('reducers', () => {
         });
 
         it('should ignore action when no reducer is provided', () => {
-          const reducer = composeReducer(
+          const reducer = composeReducers(
             branchAction({
               INC: incValue(null, 1),
               DEC: decValue(null, 1)
@@ -27,7 +32,7 @@ describe('reducers', () => {
         });
 
         it('should call reducer when multiple object branching', () => {
-          const reducer = composeReducer(
+          const reducer = composeReducers(
             branchAction(
               {
                 INC: incValue(null, 1)
@@ -44,7 +49,7 @@ describe('reducers', () => {
         });
 
         it('should call reducer in right order', () => {
-          const reducer = composeReducer(
+          const reducer = composeReducers(
             branchAction(
               {
                 ACT: incValue(null, 1)
@@ -61,7 +66,7 @@ describe('reducers', () => {
 
       describe('array branching', () => {
         it('should reduce given action', () => {
-          const reducer = composeReducer(
+          const reducer = composeReducers(
             branchAction(['INC', incValue(null, 1)], ['DEC', decValue(null, 1)])
           );
           expect(reducer(0, { type: 'OTHER' })).toBe(0);
@@ -71,7 +76,7 @@ describe('reducers', () => {
         });
 
         it('should reduce on alias type', () => {
-          const reducer = composeReducer(
+          const reducer = composeReducers(
             branchAction(
               ['INC', 'INCREASE', incValue(null, 1)],
               ['DEC', decValue(null, 1)]
@@ -86,7 +91,7 @@ describe('reducers', () => {
 
       describe('predicate branching', () => {
         it('should reduce given action', () => {
-          const reducer = composeReducer(
+          const reducer = composeReducers(
             branchAction(
               [(state, action) => action.type === 'INC', incValue(null, 1)],
               [(state, action) => action.type === 'DEC', decValue(null, 1)]
@@ -101,7 +106,7 @@ describe('reducers', () => {
 
       describe('combining branchings', () => {
         it('should reduce predicate with array given action', () => {
-          const reducer = composeReducer(
+          const reducer = composeReducers(
             branchAction(
               [
                 (state, action) => action.type === 'INC',

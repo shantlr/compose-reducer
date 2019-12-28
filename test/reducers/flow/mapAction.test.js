@@ -1,9 +1,9 @@
 import { TrackingState } from '../../../src/helpers/trackingState';
-import { withAction, createReducer } from '../../../src';
+import { mapAction, createReducer } from '../../../src';
 
 describe('reducers', () => {
   describe('context', () => {
-    describe('withAction', () => {
+    describe('mapAction', () => {
       let trackingState;
       beforeEach(() => {
         trackingState = new TrackingState();
@@ -15,7 +15,7 @@ describe('reducers', () => {
           action = ts.action;
         });
         const expectedAction = {};
-        withAction(expectedAction, composableReducer)(trackingState);
+        mapAction(expectedAction, composableReducer)(trackingState);
         expect(composableReducer).toBeCalled();
         expect(trackingState.action).not.toBe(action);
         expect(action).toBe(expectedAction);
@@ -23,7 +23,7 @@ describe('reducers', () => {
 
       it('should scope replaced action', () => {
         const composableReducer = jest.fn();
-        withAction({ hello: 'world' }, composableReducer)(trackingState);
+        mapAction({ hello: 'world' }, composableReducer)(trackingState);
         expect(trackingState.action).toEqual(undefined);
       });
 
@@ -44,10 +44,10 @@ describe('reducers', () => {
 
         const expectedAction1 = { hello: 'world' };
         const expectedAction2 = { world: 'hello' };
-        withAction(
+        mapAction(
           expectedAction1,
           r1,
-          withAction(expectedAction2, r2)
+          mapAction(expectedAction2, r2)
         )(trackingState);
 
         expect(r1).toBeCalled();
