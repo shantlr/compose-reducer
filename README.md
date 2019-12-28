@@ -2,8 +2,6 @@
 
 Compose-reducer helps you create less verbose and more expressive reducer.
 
-Compose-reducer 
-
 - [compose-reducer](#compose-reducer)
   - [Install](#install)
   - [Api](#api)
@@ -32,6 +30,8 @@ Compose-reducer
 `yarn add compose-reducer`
 
 ## Api
+
+WARNING: Api is a first draft and may change in the future.
 
 ### `composeReducer`
 
