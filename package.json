@@ -1,6 +1,6 @@
 {
   "name": "compose-reducer",
-  "version": "0.0.1",
+  "version": "0.0.0",
   "description": "composable reducer",
   "keywords": [
     "redux",
@@ -23,7 +23,8 @@
     "test:watch": "yarn test --watch",
     "test:cov": "yarn test --coverage",
     "lint": "eslint src",
-    "build": "babel-cli -s inline -d lib src"
+    "build": "babel-cli -s inline -d lib src",
+    "prepublish": "yarn lint && yarn test && yarn build"
   },
   "dependencies": {},
   "prettier": {
