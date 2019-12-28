@@ -1,9 +1,9 @@
-import { withContextBase } from './withContext';
+import { withContextBase } from '../context/withContext';
 import { wrapValueResolver } from '../../helpers/resolve';
 import { ACTION_OVERRIDE_SYMBOL } from '../../helpers/trackingState';
 import { createReducer } from '../../helpers/createReducer';
 
-export const withAction = (actionResolver, ...composableReducers) => {
+export const mapAction = (actionResolver, ...composableReducers) => {
   const valueResolver = wrapValueResolver(actionResolver);
   return withContextBase(
     trackingState => ({
@@ -13,7 +13,7 @@ export const withAction = (actionResolver, ...composableReducers) => {
   );
 };
 
-export const withActions = (actionsResolver, ...composableReducers) => {
+export const mapActions = (actionsResolver, ...composableReducers) => {
   const resolveActions = wrapValueResolver(actionsResolver);
 
   return createReducer(trackingState => {
@@ -37,3 +37,5 @@ export const withActions = (actionsResolver, ...composableReducers) => {
     }
   });
 };
+
+export const onEach = mapActions;

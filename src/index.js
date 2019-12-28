@@ -12,8 +12,6 @@ export { pushValue, pushValues } from './reducers/value/pushValues';
 export { branch } from './reducers/flow/branch';
 export { branchAction } from './reducers/flow/branchAction';
 
-export { onEach } from './reducers/flow/onEach';
-
 export { withContext } from './reducers/context/withContext';
 export { at } from './reducers/context/at';
-export { withAction, withActions } from './reducers/context/withAction';
+export { mapAction, mapActions, onEach } from './reducers/flow/mapAction';

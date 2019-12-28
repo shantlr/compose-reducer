@@ -20,12 +20,12 @@ Compose-reducer helps you create less verbose and more expressive reducer.
     - [Flow composable reducer](#flow-composable-reducer)
       - [branch](#branch)
       - [branchAction](#branchaction)
+    - [mapAction](#mapaction)
+    - [mapActions](#mapactions)
       - [onEach](#oneach)
     - [Context](#context)
       - [withContext](#withcontext)
       - [at](#at)
-    - [withAction](#withaction)
-    - [withActions](#withactions)
 
 ## Install
 
@@ -363,6 +363,62 @@ reducer(initialState, { type: 'INC_COUNTER' }); // { counter: 2 }
 reducer(initialState, { type: 'INCREASE' }); // { counter: 1 }
 ```
 
+### `mapAction`
+
+Apply all given composable reducer with resolved value as action.
+
+This may be usefull to map input state/action for easier reducer reusability.
+
+```ts
+withAction(
+  actionResolver: any | (state: any, action: any, context: object) => any,
+  ...composableReducers: ComposableReducer[]
+): ComposableReducer
+```
+
+```ts
+const reducer = composeReducer(
+  withAction(
+    (state, action) => action.payload,
+    setValue('field')
+  ),
+)
+
+reducer({ field: 0 }, { payload: 100 }) // { field: 100 }
+```
+
+### `mapActions`
+
+Apply all given composable reducers on each resolved action
+
+```ts
+withActions(
+  actionResolver: any | (state: any, action: any, context: object) => any[],
+  ...composableReducers: ComposableReducer[]
+): ComposableReducer
+```
+
+```ts
+const reducer = composeReducer(
+  withActions(
+    (state, action) => action.items,
+    setValue(
+      (state, action) => ['entities', action.id],
+    ),
+    pushValue(
+      'ids',
+      (state, action) => action.id,
+    )
+  )
+)
+
+reducer({ entities: {}, ids: [] }, { items: [{ id: 1, name: 'item 1' }, { id: 2, name: 'item 2' }, { id: 3, name: 'item 3' }] })
+// {
+//   entities: { 1: { id: 1, name: 'item 1' }, 2: { id: 2, name: 'item 2' }, 3: { id: 3, name: 'item 3' } } }
+//   ids: [1, 2, 3]
+// }
+```
+
 #### `onEach`
 
 Alias of [withActions](#withactions)
@@ -458,60 +514,4 @@ const reducer = composeReducer(
 )
 
 reducer({ counter: 0, field: { counter: 0, subfield: { counter: 0 } } }) // { counter: 5, field: { counter: 10, subfield: { counter: 200 } }  }
-```
-
-### `withAction`
-
-Apply all given composable reducer with resolved value as action.
-
-This may be usefull to map input state/action for easier reducer reusability.
-
-```ts
-withAction(
-  actionResolver: any | (state: any, action: any, context: object) => any,
-  ...composableReducers: ComposableReducer[]
-): ComposableReducer
-```
-
-```ts
-const reducer = composeReducer(
-  withAction(
-    (state, action) => action.payload,
-    setValue('field')
-  ),
-)
-
-reducer({ field: 0 }, { payload: 100 }) // { field: 100 }
-```
-
-### `withActions`
-
-Apply all given composable reducers on each resolved action
-
-```ts
-withActions(
-  actionResolver: any | (state: any, action: any, context: object) => any[],
-  ...composableReducers: ComposableReducer[]
-): ComposableReducer
-```
-
-```ts
-const reducer = composeReducer(
-  withActions(
-    (state, action) => action.items,
-    setValue(
-      (state, action) => ['entities', action.id],
-    ),
-    pushValue(
-      'ids',
-      (state, action) => action.id,
-    )
-  )
-)
-
-reducer({ entities: {}, ids: [] }, { items: [{ id: 1, name: 'item 1' }, { id: 2, name: 'item 2' }, { id: 3, name: 'item 3' }] })
-// {
-//   entities: { 1: { id: 1, name: 'item 1' }, 2: { id: 2, name: 'item 2' }, 3: { id: 3, name: 'item 3' } } }
-//   ids: [1, 2, 3]
-// }
 ```
