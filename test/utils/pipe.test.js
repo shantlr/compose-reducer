@@ -3,10 +3,13 @@ import { pipe } from '../../src/utils/pipe';
 describe('utils', () => {
   describe('pipe', () => {
     it('should return a piped function', () => {
-      const value = {};
-      const ft = jest.fn(() => value);
-      const pipedFt = pipe(ft);
+      const pipedFt = pipe();
       expect(typeof pipedFt === 'function').toBe(true);
+    });
+
+    it('should return undefined when pipe is empty', () => {
+      const pipedFt = pipe();
+      expect(pipedFt()).toBe(undefined);
     });
 
     it('should call given function', () => {
