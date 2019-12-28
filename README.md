@@ -446,7 +446,9 @@ reducer({ counter: 0, field: { counter: 0, subfield: { counter: 0 } } }) // { co
 
 ### `withAction`
 
-Replace action of all sub (given) composable reducers
+Apply all given composable reducer with resolved value as action.
+
+This may be usefull to map input state/action for easier reducer reusability.
 
 ```ts
 withAction(
@@ -455,7 +457,20 @@ withAction(
 ): ComposableReducer
 ```
 
+```ts
+const reducer = composeReducer(
+  withAction(
+    (state, action) => action.payload,
+    setValue('field')
+  ),
+)
+
+reducer({ field: 0 }, { payload: 100 }) // { field: 100 }
+```
+
 ### `withActions`
+
+Apply all given composable reducers on each resolved action
 
 ```ts
 withActions(
@@ -464,3 +479,23 @@ withActions(
 ): ComposableReducer
 ```
 
+```ts
+const reducer = composeReducer(
+  withActions(
+    (state, action) => action.items,
+    setValue(
+      (state, action) => ['entities', action.id],
+    ),
+    pushValue(
+      'ids',
+      (state, action) => action.id,
+    )
+  )
+)
+
+reducer({ entities: {}, ids: [] }, { items: [{ id: 1, name: 'item 1' }, { id: 2, name: 'item 2' }, { id: 3, name: 'item 3' }] })
+// {
+//   entities: { 1: { id: 1, name: 'item 1' }, 2: { id: 2, name: 'item 2' }, 3: { id: 3, name: 'item 3' } } }
+//   ids: [1, 2, 3]
+// }
+```
