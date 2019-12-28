@@ -7,7 +7,8 @@
     "reducer",
     "compose"
   ],
-  "main": "src/index.js",
+  "main": "lib/index.js",
+  "module": "es/index.js",
   "repository": "https://github.com/Patrick-lin/compose-reducer.git",
   "author": "Patrick <shantry@hotmail.fr>",
   "license": "MIT",
@@ -26,6 +27,7 @@
   "devDependencies": {
     "@babel/core": "^7.7.2",
     "@babel/preset-env": "^7.7.1",
+    "@rollup/plugin-node-resolve": "^6.0.0",
     "babel-jest": "^24.9.0",
     "eslint": "^6.6.0",
     "eslint-config-airbnb-base": "^14.0.0",
@@ -34,6 +36,8 @@
     "eslint-plugin-prettier": "^3.1.1",
     "eslint-plugin-security": "^1.4.0",
     "jest": "^24.9.0",
-    "prettier": "^1.19.1"
+    "prettier": "^1.19.1",
+    "rollup": "^1.27.14",
+    "rollup-plugin-babel": "^4.3.3"
   }
 }

@@ -51,8 +51,7 @@ Composable reducer will be applied in given order.
   );
 
   const initalState = { counter1: 0, counter2: 2 };
-  const nextState = reducer(initialState);
-  // nextState === { counter1: 6, counter2: 12 }
+  reducer(initialState); // { counter1: 6, counter2: 12 }
 ```
 
 ### Composable Reducer
