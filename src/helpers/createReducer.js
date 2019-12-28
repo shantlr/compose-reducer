@@ -9,7 +9,7 @@ const initTrackingState = (state, action) => new TrackingState(state, action);
 /**
  * Compose reducers
  */
-export const composeReducers = (...composableReducers) => {
+export const composeReducer = (...composableReducers) => {
   return pipe(
     initTrackingState,
     ...composableReducers,
@@ -23,7 +23,7 @@ export const composeReducers = (...composableReducers) => {
 export const createReducer = reduce => trackingState => {
   if (!(trackingState instanceof TrackingState)) {
     throw new Error(
-      'Invalid tracking state. Did you use composable-reducer without composeReducers ?'
+      'Invalid tracking state. Did you use composable-reducer without composeReducer ?'
     );
   }
   reduce(trackingState);

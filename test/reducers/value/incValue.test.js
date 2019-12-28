@@ -1,10 +1,10 @@
-import { composeReducers, incValue } from '../../../src';
+import { composeReducer, incValue } from '../../../src';
 
 describe('reducers', () => {
   describe('value', () => {
     describe('incValue', () => {
       it('should increase root value', () => {
-        const reducer = composeReducers(incValue('', 1));
+        const reducer = composeReducer(incValue('', 1));
         expect(reducer(null)).toEqual(1);
         expect(reducer(1)).toEqual(2);
         expect(reducer(3)).toEqual(4);
@@ -21,7 +21,7 @@ describe('reducers', () => {
         });
 
         it('should increase field when path is a nested string path', () => {
-          const reducer = composeReducers(incValue('field1.subField1', 32));
+          const reducer = composeReducer(incValue('field1.subField1', 32));
           const state = {
             field1: {
               subField1: 10,
@@ -48,7 +48,7 @@ describe('reducers', () => {
         });
 
         it('should increase field when path is an array', () => {
-          const reducer = composeReducers(incValue(['field1'], 15));
+          const reducer = composeReducer(incValue(['field1'], 15));
           const state = { field1: 5, field2: {}, field3: { hello: 'world' } };
 
           const nextState = reducer(state);
@@ -63,7 +63,7 @@ describe('reducers', () => {
         });
 
         it('should increase field when path is a multi-level array path', () => {
-          const reducer = composeReducers(
+          const reducer = composeReducer(
             incValue(['field1', 'subField1', 'subSubField'], 10)
           );
           const state = {
@@ -95,7 +95,7 @@ describe('reducers', () => {
       describe('when path is dynamic', () => {
         it('should call path resolver with state and action', () => {
           const pathResolver = jest.fn().mockReturnValue('');
-          const reducer = composeReducers(incValue(pathResolver));
+          const reducer = composeReducer(incValue(pathResolver));
 
           const state = { hello: 'world' };
           const action = { type: 'ACTION' };
@@ -108,7 +108,7 @@ describe('reducers', () => {
 
         it('should throw an error when resolved path is invalid', () => {
           const pathResolver = jest.fn().mockReturnValue(42);
-          const reducer = composeReducers(incValue(pathResolver));
+          const reducer = composeReducer(incValue(pathResolver));
           expect(reducer).toThrow(
             '[path-resolver] Resolved path is expected to be a string or an array of string but received'
           );
@@ -116,7 +116,7 @@ describe('reducers', () => {
 
         it('should increase field when path is field name', () => {
           const pathResolver = jest.fn().mockReturnValue('field1');
-          const reducer = composeReducers(incValue(pathResolver, 10));
+          const reducer = composeReducer(incValue(pathResolver, 10));
           const state = { field1: 123, field2: {}, field3: { hello: 'world' } };
 
           const nextState = reducer(state);
@@ -131,7 +131,7 @@ describe('reducers', () => {
         });
         it('should increase field when path is a multi-level string path', () => {
           const pathResolver = jest.fn().mockReturnValue('field1.subField1');
-          const reducer = composeReducers(incValue(pathResolver, 5));
+          const reducer = composeReducer(incValue(pathResolver, 5));
           const state = {
             field1: {
               subField1: 123,
@@ -156,7 +156,7 @@ describe('reducers', () => {
 
         it('should increase field when path is an array', () => {
           const pathResolver = jest.fn().mockReturnValue(['field1']);
-          const reducer = composeReducers(incValue(pathResolver, 10));
+          const reducer = composeReducer(incValue(pathResolver, 10));
           const state = { field1: 2, field2: {}, field3: { hello: 'world' } };
 
           const nextState = reducer(state);
@@ -174,7 +174,7 @@ describe('reducers', () => {
           const pathResolver = jest
             .fn()
             .mockReturnValue(['field1', 'subField1']);
-          const reducer = composeReducers(incValue(pathResolver, 10));
+          const reducer = composeReducer(incValue(pathResolver, 10));
           const state = {
             field1: {
               subField1: 123,

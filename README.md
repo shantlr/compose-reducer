@@ -7,7 +7,7 @@ Compose-reducer helps you create less verbose and more expressive reducer.
 - [compose-reducer](#compose-reducer)
   - [Install](#install)
   - [Api](#api)
-    - [composeReducers](#composereducers)
+    - [composeReducer](#composereducer)
     - [Composable Reducer](#composable-reducer)
     - [Value composable reducer](#value-composable-reducer)
       - [setValue](#setvalue)
@@ -33,18 +33,18 @@ Compose-reducer helps you create less verbose and more expressive reducer.
 
 ## Api
 
-### `composeReducers`
+### `composeReducer`
 
 This function create a reducer with given pipeline of [composable reducer](#composable-reducer)
 
 ```ts
-  composeReducers(...composableReducers: ComposableReducer[]): (state: State, action: Action) => State
+  composeReducer(...composableReducers: ComposableReducer[]): (state: State, action: Action) => State
 ```
 
 Composable reducer will be applied in given order.
 
 ```ts
-  const reducer = composeReducers(
+  const reducer = composeReducer(
     incValue('counter1', 1),  // increase counter1 field by 1
     incValue('counter2', 10), // then increase counter2 field by 10
     incValue('counter1', 5),  // then increase counter1 field by 5
@@ -57,7 +57,7 @@ Composable reducer will be applied in given order.
 
 ### Composable Reducer
 
-Composable reducer are meant to be used within [composeReducers](#composereducers).
+Composable reducer are meant to be used within [composeReducer](#composereducer).
 
 ### Value composable reducer
 
@@ -77,9 +77,9 @@ setValue(
 ```
 
 ```ts
-import { composeReducers, setValue } from '@shantry/compose-reducer';
+import { composeReducer, setValue } from '@shantry/compose-reducer';
 
-const reducer = composeReducers(
+const reducer = composeReducer(
   setValue('field.nestedField', 'hello world')
 );
 
@@ -87,7 +87,7 @@ const initialState = {};
 reducer(initialState); // { field: { nestedField: 'hello world' } }
 
 //  equivalent to (dynamic path)
-composeReducers(
+composeReducer(
   setValue(
     (state, action) => 'field.nestedField',
     'hello world'
@@ -95,7 +95,7 @@ composeReducers(
 );
 
 // equivalent to (dynamic value)
-composeReducers(
+composeReducer(
   setValue(
     'field.nestedField',
     (state, action) => 'hello world'
@@ -103,7 +103,7 @@ composeReducers(
 );
 
 // In case value resolver is not provided, value will be resolved to given action
-const setSizeReducer = composeReducers(
+const setSizeReducer = composeReducer(
   setValue('size')
 );
 setSizeReducer({ size: 0 }, 10) // { size: 10 }
@@ -118,9 +118,9 @@ unsetValue(
 ```
 
 ```ts
-import { composeReducers, unsetValue } from '@shantry/compose-reducer';
+import { composeReducer, unsetValue } from '@shantry/compose-reducer';
 
-const reducer = composeReducers(
+const reducer = composeReducer(
   unsetValue('entities.1')
 )
 
@@ -128,7 +128,7 @@ const initalState = { entites: { 1: { id: '1' }, 42: { id: '42' } } };
 reducer(initialState) // { entites: { 42: { id: '42' } } }
 
 // equivalent to (dynamic path)
-const reducer = composeReducers(
+const reducer = composeReducer(
   unsetValue(
     (state, action) => 'entites.1',
   )
@@ -145,24 +145,24 @@ incValue(
 ```
 
 ```ts
-const reducer = composeReducers(incValue('counter', 1));
+const reducer = composeReducer(incValue('counter', 1));
 const initialState = { counter: 0 };
 reducer(initialState); // { counter: 1 }
 
 // equivalent to (dynamic path)
-composeReducers(incValue(
+composeReducer(incValue(
   (state, action) => 'counter',
   1
 ));
 
 // equivalent to (dynamic value)
-composeReducers(incValue(
+composeReducer(incValue(
  'counter',
  (state, action) => 1,
 ));
 
 // equivalent to (dynamic path and value)
-composeReducers(incValue(
+composeReducer(incValue(
  (state, action) => 'counter',
  (state, action) => 1,
 ));
@@ -178,24 +178,24 @@ decValue(
 ```
 
 ```ts
-const reducer = composeReducers(decValue('counter', 1));
+const reducer = composeReducer(decValue('counter', 1));
 const initialState = { counter: 0 };
 reducer(initialState); // { counter: -1 }
 
 // equivalent to (dynamic path)
-composeReducers(decValue(
+composeReducer(decValue(
   (state, action) => 'counter',
   1
 ));
 
 // equivalent to (dynamic value)
-composeReducers(decValue(
+composeReducer(decValue(
  'counter',
  (state, action) => 1,
 ));
 
 // equivalent to (dynamic path and value)
-composeReducers(decValue(
+composeReducer(decValue(
  (state, action) => 'counter',
  (state, action) => 1,
 ));
@@ -211,25 +211,25 @@ pushValue(
 ```
 
 ```ts
-const reducer = composeReducers(pushValue('array', 10));
+const reducer = composeReducer(pushValue('array', 10));
 const initialState = { array: null };
 const nextState = reducer(initialState); // { array: [10] }
 reducer(nextState) // { array: [10, 10] }
 
 // equivalent to (dynamic path)
-composeReducers(pushValue(
+composeReducer(pushValue(
   (state, action) => 'array',
   10
 ));
 
 // equivalent to (dynamic value)
-composeReducers(pushValue(
+composeReducer(pushValue(
  'array',
  (state, action) => 10,
 ));
 
 // equivalent to (dynamic path and value)
-composeReducers(pushValue(
+composeReducer(pushValue(
  (state, action) => 'array',
  (state, action) => 10,
 ));
@@ -245,25 +245,25 @@ pushValues(
 ```
 
 ```ts
-const reducer = composeReducers(pushValues('array', [1, 2, 3]));
+const reducer = composeReducer(pushValues('array', [1, 2, 3]));
 const initialState = { array: null };
 const nextState = reducer(initialState); // { array: [1, 2, 3 }
 reducer(nextState) // { array: [1, 2, 3, 1, 2, 3] }
 
 // equivalent to (dynamic path)
-composeReducers(pushValues(
+composeReducer(pushValues(
   (state, action) => 'array',
   [1, 2, 3]
 ));
 
 // equivalent to (dynamic value)
-composeReducers(pushValues(
+composeReducer(pushValues(
  'array',
  (state, action) => [1, 2, 3],
 ));
 
 // equivalent to (dynamic path and value)
-composeReducers(pushValues(
+composeReducer(pushValues(
  (state, action) => 'array',
  (state, action) => [1, 2, 3],
 ));
@@ -280,13 +280,13 @@ popValues(
 
 ```ts
 // reducer that will remove elem at index 1 of field 'array'
-const reducer = composeReducers(popValues('array', 1));
+const reducer = composeReducer(popValues('array', 1));
 reducer({ array: ['hello', 'world', 'hel', 'wor'] }); // { array: ['hello', 'hel', 'wor']}
 // ignore if out of range
 reducer({ array: [] }); // { array: [] }
 
 // reducer that will remove elem at index 1, 2 and 3 of field 'array'
-const reducer2 = composeReducers(popValues('array', [1, 2, 3]));
+const reducer2 = composeReducer(popValues('array', [1, 2, 3]));
 reducer2({ array: ['hello', 'world', 'hel', 'wor'] }); // { array: ['hello']}
 // ignore out of range indexes
 reducer2({ array: ['hello', 'world'] }); // { array: ['hello']}
@@ -314,9 +314,9 @@ branchAction(
 ```
 
 ```ts
-import { composeReducers, branchAction } from '@shantry/compose-reducer';
+import { composeReducer, branchAction } from '@shantry/compose-reducer';
 
-const reducer = composeReducers(branchAction({
+const reducer = composeReducer(branchAction({
   INC_COUNTER: incValue('counter', 1),
   DEC_COUNTER: decValue('counter', 1),
 }));
@@ -326,13 +326,13 @@ reducer(initialState, { type: 'INC_COUNTER' }) // { counter: 1 }
 reducer(initialState, { type: 'DEC_COUNTER' }) // { counter: -1 }
 
 // equivalent to
-composeReducers(branchAction(
+composeReducer(branchAction(
   ['INC_COUNTER', incValue('counter', 1)],
   ['DEC_COUNTER', decValue('counter', 1)],
 ));
 
 // equivalent to
-composeReducers(branchAction(
+composeReducer(branchAction(
   [(state, action) => action.type === 'INC_COUNTER', incValue('counter', 1)],
   [(state, action) => action.type === 'DEC_COUNTER', decValue('counter', 1)],
 ))
@@ -342,7 +342,7 @@ Array branching may have a liste of action type or predicate before the actual r
 Type and predicate of a same stage will apply reducer only once
 
 ```ts
-const reducer = composeReducers(branchAction(
+const reducer = composeReducer(branchAction(
   [(state, action) => action.type === 'INC_COUNTER', 'INC_COUNTER', 'INCREASE', incValue('counter', 1)]
 ));
 const initalState = { counter: 0 };
@@ -353,7 +353,7 @@ reducer(initialState, 'INCREASE'); // { counter: 1 }
 In case predicate match in different stages, each reducer will be applied
 
 ```ts
-const reducer = composeReducers(branchAction(
+const reducer = composeReducer(branchAction(
   [(state, action) => action.type === 'INC_COUNTER', incValue('counter', 1)],
   ['INC_COUNTER', 'INCREASE', incValue('counter', 1)]
 ));
@@ -377,7 +377,7 @@ withAction(
 ```
 
 ```ts
-const reducer = composeReducers(
+const reducer = composeReducer(
   withAction(
     (state, action) => action.payload,
     setValue('field')
@@ -399,7 +399,7 @@ withActions(
 ```
 
 ```ts
-const reducer = composeReducers(
+const reducer = composeReducer(
   withActions(
     (state, action) => action.items,
     setValue(
@@ -424,7 +424,7 @@ reducer({ entities: {}, ids: [] }, { items: [{ id: 1, name: 'item 1' }, { id: 2,
 Alias of [withActions](#withactions)
 
 ```ts
-const reducer = composeReducers(
+const reducer = composeReducer(
   onEach(
     (state, action) => action.items,
     setValue(
@@ -463,7 +463,7 @@ withContext(
 ```
 
 ```ts
-const reducer = composeReducers(
+const reducer = composeReducer(
   withContext(
     (state, action) => ({
       id: `${action.payload.type}::${action.payload.id}`,
@@ -501,7 +501,7 @@ at(
 ```
 
 ```ts
-const reducer = composeReducers(
+const reducer = composeReducer(
   at(
     'field',
     incValue('counter', 10) // will be applied to 'field'

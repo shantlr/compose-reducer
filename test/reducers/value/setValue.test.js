@@ -1,11 +1,11 @@
-import { setValue, composeReducers } from '../../../src';
+import { setValue, composeReducer } from '../../../src';
 
 describe('reducers', () => {
   describe('value', () => {
     describe('setValue', () => {
       it('should set root value', () => {
         const value = { hello: 'world' };
-        const reducer = composeReducers(setValue(null, value));
+        const reducer = composeReducer(setValue(null, value));
 
         expect(reducer(null)).toBe(value);
         expect(reducer('something else')).toBe(value);
@@ -15,7 +15,7 @@ describe('reducers', () => {
       describe('when path is static', () => {
         describe('when value is static', () => {
           it('should set string value as is', () => {
-            const reducer = composeReducers(setValue('', 'hello world'));
+            const reducer = composeReducer(setValue('', 'hello world'));
 
             expect(reducer('')).toEqual('hello world');
           });
@@ -23,14 +23,14 @@ describe('reducers', () => {
 
         describe('when path did not exist', () => {
           it('should set static path value', () => {
-            const reducer = composeReducers(setValue('field1', 'hello world'));
+            const reducer = composeReducer(setValue('field1', 'hello world'));
             expect(reducer(null)).toEqual({
               field1: 'hello world'
             });
           });
 
           it('should set static nested path value', () => {
-            const reducer = composeReducers(
+            const reducer = composeReducer(
               setValue('field1.subfield', 'hello world')
             );
             expect(reducer(null)).toEqual({
@@ -41,7 +41,7 @@ describe('reducers', () => {
 
         describe('when path did exist', () => {
           it('should set static path value', () => {
-            const reducer = composeReducers(setValue('field1', 'hello world'));
+            const reducer = composeReducer(setValue('field1', 'hello world'));
 
             const state = { field1: '' };
             const nextState = reducer(state);
@@ -52,7 +52,7 @@ describe('reducers', () => {
           });
 
           it('should set nested static path', () => {
-            const reducer = composeReducers(
+            const reducer = composeReducer(
               setValue('field1.nested', 'hello world')
             );
             const state = {
@@ -75,9 +75,7 @@ describe('reducers', () => {
       describe('dynamic path', () => {
         it('should call path resolver with state and action', () => {
           const pathResolver = jest.fn().mockReturnValue(['field1']);
-          const reducer = composeReducers(
-            setValue(pathResolver, 'hello world')
-          );
+          const reducer = composeReducer(setValue(pathResolver, 'hello world'));
           const state = { field1: 'value' };
           const action = { type: 'ACTION' };
           reducer(state, action);
@@ -87,7 +85,7 @@ describe('reducers', () => {
         });
 
         it('should set value with string path ', () => {
-          const reducer = composeReducers(
+          const reducer = composeReducer(
             setValue(() => 'field1', 'hello world')
           );
 
@@ -102,7 +100,7 @@ describe('reducers', () => {
         });
 
         it('should set value with multi-level string path', () => {
-          const reducer = composeReducers(
+          const reducer = composeReducer(
             setValue(() => 'field1.nested.nested2', 'hello world')
           );
 
@@ -124,7 +122,7 @@ describe('reducers', () => {
         });
 
         it('should set value with array path ', () => {
-          const reducer = composeReducers(
+          const reducer = composeReducer(
             setValue(() => ['field1'], 'hello world')
           );
 
@@ -139,7 +137,7 @@ describe('reducers', () => {
         });
 
         it('should set value with multi-level array path', () => {
-          const reducer = composeReducers(
+          const reducer = composeReducer(
             setValue(() => ['field1', 'nested', 'nested2'], 'hello world')
           );
 
@@ -164,7 +162,7 @@ describe('reducers', () => {
       describe('dynamic value', () => {
         it('should call value resolver with state and action', () => {
           const valueResolver = jest.fn().mockReturnValue(['field1']);
-          const reducer = composeReducers(setValue('', valueResolver));
+          const reducer = composeReducer(setValue('', valueResolver));
           const state = { field1: 'value' };
           const action = { type: 'ACTION' };
           reducer(state, action);
@@ -176,7 +174,7 @@ describe('reducers', () => {
 
       describe('when value resolver is not provided', () => {
         it('should set action as value', () => {
-          const reducer = composeReducers(setValue(''));
+          const reducer = composeReducer(setValue(''));
           expect(reducer('', 10)).toBe(10);
         });
       });

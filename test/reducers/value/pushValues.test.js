@@ -1,10 +1,10 @@
-import { composeReducers, pushValues } from '../../../src';
+import { composeReducer, pushValues } from '../../../src';
 
 describe('reducers', () => {
   describe('value', () => {
     describe('pushValues', () => {
       it('should push value to root value', () => {
-        const reducer = composeReducers(pushValues('', [10, 15, 20]));
+        const reducer = composeReducer(pushValues('', [10, 15, 20]));
         expect(reducer(null)).toEqual([10, 15, 20]);
         expect(reducer([1])).toEqual([1, 10, 15, 20]);
         expect(reducer([3, 2, 1])).toEqual([3, 2, 1, 10, 15, 20]);
@@ -20,7 +20,7 @@ describe('reducers', () => {
           );
         });
         it('should throw an error when previous valus is invalid', () => {
-          const reducer = composeReducers(pushValues('', [10]));
+          const reducer = composeReducer(pushValues('', [10]));
 
           const state = { hello: 'world' };
           const action = { type: 'ACTION' };
@@ -30,7 +30,7 @@ describe('reducers', () => {
         });
 
         it('should push value to field when path is a nested string path', () => {
-          const reducer = composeReducers(
+          const reducer = composeReducer(
             pushValues('field1.subField1', [32, 42])
           );
           const state = {
@@ -60,7 +60,7 @@ describe('reducers', () => {
         });
 
         it('should push value to field when path is an array', () => {
-          const reducer = composeReducers(pushValues(['field1'], [15, 30]));
+          const reducer = composeReducer(pushValues(['field1'], [15, 30]));
           const state = { field1: [], field2: {}, field3: { hello: 'world' } };
 
           const nextState = reducer(state);
@@ -75,7 +75,7 @@ describe('reducers', () => {
         });
 
         it('should push value to field when path is a multi-level array path', () => {
-          const reducer = composeReducers(
+          const reducer = composeReducer(
             pushValues(['field1', 'subField1', 'subSubField'], [10, 11])
           );
           const state = {
@@ -107,7 +107,7 @@ describe('reducers', () => {
       describe('when path is dynamic', () => {
         it('should call path resolver with state and action', () => {
           const pathResolver = jest.fn().mockReturnValue('');
-          const reducer = composeReducers(pushValues(pathResolver, []));
+          const reducer = composeReducer(pushValues(pathResolver, []));
 
           const state = [];
           const action = { type: 'ACTION' };
@@ -120,7 +120,7 @@ describe('reducers', () => {
 
         it('should throw an error when resolved path is invalid', () => {
           const pathResolver = jest.fn().mockReturnValue(42);
-          const reducer = composeReducers(pushValues(pathResolver, [10, 11]));
+          const reducer = composeReducer(pushValues(pathResolver, [10, 11]));
           expect(reducer).toThrow(
             '[path-resolver] Resolved path is expected to be a string or an array of string but received'
           );
@@ -128,7 +128,7 @@ describe('reducers', () => {
 
         it('should push value to field when path is field name', () => {
           const pathResolver = jest.fn().mockReturnValue('field1');
-          const reducer = composeReducers(pushValues(pathResolver, [10]));
+          const reducer = composeReducer(pushValues(pathResolver, [10]));
           const state = {
             field1: [123],
             field2: {},
@@ -147,7 +147,7 @@ describe('reducers', () => {
         });
         it('should push value to field when path is a multi-level string path', () => {
           const pathResolver = jest.fn().mockReturnValue('field1.subField1');
-          const reducer = composeReducers(pushValues(pathResolver, [5]));
+          const reducer = composeReducer(pushValues(pathResolver, [5]));
           const state = {
             field1: {
               subField1: [123],
@@ -172,7 +172,7 @@ describe('reducers', () => {
 
         it('should push value to field when path is an array', () => {
           const pathResolver = jest.fn().mockReturnValue(['field1']);
-          const reducer = composeReducers(pushValues(pathResolver, [10]));
+          const reducer = composeReducer(pushValues(pathResolver, [10]));
           const state = { field1: [2], field2: {}, field3: { hello: 'world' } };
 
           const nextState = reducer(state);
@@ -190,7 +190,7 @@ describe('reducers', () => {
           const pathResolver = jest
             .fn()
             .mockReturnValue(['field1', 'subField1']);
-          const reducer = composeReducers(pushValues(pathResolver, [10]));
+          const reducer = composeReducer(pushValues(pathResolver, [10]));
           const state = {
             field1: {
               subField1: [123],
@@ -219,7 +219,7 @@ describe('reducers', () => {
 
       it('should call value resolver with state and action', () => {
         const valueResolver = jest.fn().mockReturnValue([42]);
-        const reducer = composeReducers(pushValues('', valueResolver));
+        const reducer = composeReducer(pushValues('', valueResolver));
 
         const state = [];
         const action = { type: 'ACTION' };

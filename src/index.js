@@ -1,4 +1,4 @@
-export { composeReducers, createReducer } from './helpers/createReducer';
+export { composeReducer, createReducer } from './helpers/createReducer';
 
 export { setValue, setValueBase } from './reducers/value/setValue';
 export { unsetValue } from './reducers/value/unsetValue';
