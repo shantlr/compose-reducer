@@ -23,7 +23,7 @@
     "test:watch": "yarn test --watch",
     "test:cov": "yarn test --coverage",
     "lint": "eslint src",
-    "build": "babel-cli -s inline -d lib src",
+    "build": "rollup -c",
     "prepublish": "yarn lint && yarn test && yarn build"
   },
   "dependencies": {},
