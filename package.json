@@ -7,12 +7,17 @@
     "reducer",
     "compose"
   ],
-  "main": "lib/index.js",
-  "module": "es/index.js",
   "repository": "https://github.com/Patrick-lin/compose-reducer.git",
   "author": "Patrick <shantry@hotmail.fr>",
   "license": "MIT",
   "private": false,
+  "main": "lib/index.js",
+  "module": "es/index.js",
+  "files": [
+    "lib",
+    "es",
+    "src"
+  ],
   "scripts": {
     "test": "jest test",
     "test:watch": "yarn test --watch",
