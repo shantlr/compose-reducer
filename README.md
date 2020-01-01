@@ -1,6 +1,8 @@
 # Compose reducer
 
-Compose-reducer helps you create less verbose and more expressive reducer.
+Compose reducer helps you create less verbose and more expressive reducer besides handling all the immutable state stuff for you.
+
+Compose reducer has been written being used with redux in mind but it is simply a declarative way of creating a reducer. As such it can be used in other context where reducer are helpfull.
 
 - [Compose reducer](#compose-reducer)
   - [Install](#install)
@@ -655,9 +657,9 @@ reducer({ counter: 0, field: { counter: 0, subfield: { counter: 0 } } }) // { co
 
 #### `composable`
 
-Create a composable reducer from a pipeline of composable-reducer
+Create a composable reducer from a pipeline of composable reducers
 
-This may be usefull to create reusable reducer or split reducer logic
+This may be usefull to create reusable reducer pipeline or split reducer logic
 
 ```ts
 composable(...composableReducers: ComposableReducer[]): ComposableReducer
