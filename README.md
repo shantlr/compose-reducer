@@ -1,7 +1,7 @@
 # Compose reducer
 
-![build status](https://img.shields.io/travis/shantlr/compose-reducer)
-![npm version](https://img.shields.io/npm/v/compose-reducer)
+[![build status](https://img.shields.io/travis/shantlr/compose-reducer)](https://travis-ci.org/shantlr/compose-reducer)
+[![npm version](https://img.shields.io/npm/v/compose-reducer)](https://www.npmjs.com/package/compose-reducer)
 
 Compose reducer helps you create less verbose and more expressive reducer besides handling all the immutable state stuff for you.
 
