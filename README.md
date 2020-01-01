@@ -668,23 +668,24 @@ Using `composable` with `at` allow to separate substate reducing logic. (For red
 ```ts
 import {
   composable,
-  branchActions,
+  branchAction,
   pushValue,
-  composeReduer,
+  setValue,
+  composeReducer,
   at,
   initState
 } from 'composable-reducer';
 
 export const reduceTodos = composable(
   initState([]),
-  branchActions({
+  branchAction({
     ADD_TODO: pushValue(null, (state, action) => ({ text: action.text }))
   })
 );
 
 export const reduceVisibility = composable(
   initState('SHOW_ALL'),
-  branchActions({
+  branchAction({
     SET_VISIBILITY_FILTER: setValue(null, (state, action) => action.visibility)
   })
 );

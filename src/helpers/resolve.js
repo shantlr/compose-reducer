@@ -1,18 +1,7 @@
 import { isString } from '../utils/isString';
 import { isFunction } from '../utils/isFunction';
 import { isRootPath } from '../utils/isRootPath';
-
-export const resolve = (resolver, trackingState, additionalMeta) => {
-  return resolver(
-    trackingState.nextState,
-    trackingState.action,
-    trackingState.context,
-    {
-      initialState: trackingState.initialState,
-      ...additionalMeta
-    }
-  );
-};
+import { get } from '../utils/get';
 
 const relativePathResolver = (trackingState, path) => {
   return [...trackingState.getPath(), ...(path || [])];
@@ -20,6 +9,18 @@ const relativePathResolver = (trackingState, path) => {
 
 const staticRelativePathResolve = path => trackingState => {
   return relativePathResolver(trackingState, path);
+};
+
+export const resolve = (resolver, trackingState, additionalMeta) => {
+  return resolver(
+    get(trackingState.nextState, relativePathResolver(trackingState)),
+    trackingState.action,
+    trackingState.context,
+    {
+      initialState: trackingState.initialState,
+      ...additionalMeta
+    }
+  );
 };
 
 export const wrapPathResolver = pathResolver => {
