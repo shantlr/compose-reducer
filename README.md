@@ -29,6 +29,8 @@ Compose-reducer helps you create less verbose and more expressive reducer.
     - [Context](#context)
       - [withContext](#withcontext)
       - [at](#at)
+    - [Utils](#utils)
+      - [composable](#composable)
 
 ## Install
 
@@ -647,4 +649,25 @@ const reducer = composeReducer(
 )
 
 reducer({ counter: 0, field: { counter: 0, subfield: { counter: 0 } } }) // { counter: 5, field: { counter: 10, subfield: { counter: 200 } }  }
+```
+
+### Utils
+
+#### `composable`
+
+Create a composable reducer from a pipeline of composable-reducer
+
+This may be usefull to create reusable reducer or split reducer logic
+
+```ts
+composable(...composableReducers: ComposableReducer[]): ComposableReducer
+```
+
+Using `composable` with `at` allow to separate substate reducing logic. (This kind of )
+
+```ts
+// auth.js
+export const auth = composable(branchActions({}));
+
+const rootReducer = composeReducer(at('auth', auth));
 ```
