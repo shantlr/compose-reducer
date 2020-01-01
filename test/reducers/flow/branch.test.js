@@ -1,4 +1,4 @@
-import { composeReducer, branch, incValue, decValue } from '../../../src';
+import { composeReducer, branch, incValue, decValue, at } from '../../../src';
 
 describe('reducers', () => {
   describe('flow', () => {
@@ -28,6 +28,17 @@ describe('reducers', () => {
       it('should ignore if false resolver is not provided', () => {
         const reducer = composeReducer(branch(() => false, incValue(null, 1)));
         expect(reducer(0)).toBe(0);
+      });
+
+      it('should call predicate with relative path', () => {
+        const predicate = jest.fn().mockImplementation(() => true);
+        const reducer = composeReducer(
+          at('counter', branch(predicate, incValue(null, 1)))
+        );
+
+        expect(reducer({ counter: 0 })).toEqual({ counter: 1 });
+        expect(predicate).toHaveBeenCalled();
+        expect(predicate.mock.calls[0][0]).toBe(0);
       });
     });
   });

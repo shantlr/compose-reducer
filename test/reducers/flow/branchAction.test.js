@@ -1,4 +1,10 @@
-import { composeReducer, branchAction, incValue, decValue } from '../../../src';
+import {
+  composeReducer,
+  branchAction,
+  incValue,
+  decValue,
+  at
+} from '../../../src';
 
 describe('reducers', () => {
   describe('flow', () => {
@@ -106,6 +112,18 @@ describe('reducers', () => {
           expect(reducer(0, { type: 'INC' })).toBe(1);
           expect(reducer(1, { type: 'INC' })).toBe(2);
           expect(reducer(1, { type: 'DEC' })).toBe(0);
+        });
+
+        it('should call predicate with state at relative path', () => {
+          const predicate = jest.fn(() => true);
+          const reducer = composeReducer(
+            at('counter', branchAction([predicate, incValue(null, 1)]))
+          );
+          expect(reducer({ counter: 100 }, { type: 'INC' })).toEqual({
+            counter: 101
+          });
+          expect(predicate).toHaveBeenCalled();
+          expect(predicate.mock.calls[0][0]).toBe(100);
         });
       });
 
