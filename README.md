@@ -1,17 +1,18 @@
-# compose-reducer
+# Compose reducer
 
 Compose-reducer helps you create less verbose and more expressive reducer.
 
-- [compose-reducer](#compose-reducer)
+- [Compose reducer](#compose-reducer)
   - [Install](#install)
   - [Examples](#examples)
     - [Update state](#update-state)
-    - [Branch given action type](#branch-given-action-type)
     - [Normalize](#normalize)
+    - [Branch](#branch)
   - [Api](#api)
     - [composeReducer](#composereducer)
     - [Composable Reducer](#composable-reducer)
     - [Value composable reducer](#value-composable-reducer)
+      - [initState](#initstate)
       - [setValue](#setvalue)
       - [unsetValue](#unsetvalue)
       - [incValue](#incvalue)
@@ -39,15 +40,10 @@ Here some usage of compose-reducer
 
 ### Update state
 
-Update part of your state in a expressive and not verbose way.
+In case we would want to update a value in nested sub state, a straightforward way to do this would be a reducer like this:
 
 ```js
-const reducer = composeReducer(
-  setValue('field.subfield.value', (state, action) => action.payload)
-);
-
-// equivalent to
-(state, action) => {
+const reducer = (state, action) => {
   return {
     ...state,
     field: {
@@ -57,43 +53,27 @@ const reducer = composeReducer(
         value: action.payload
       }
     }
-  }
-}
+  };
+};
 ```
 
-### Branch given action type
+With `compose-reducer`:
 
 ```js
 const reducer = composeReducer(
-  brancheAction({
-    INCREASE_COUNTER: incValue('counter', 1),
-    DECREASE_COUNTER: decValue('counter', 1),
-    DYNAMIC_INCREASE_COUNTER: incValue('counter', (state, action) => action.payload),
-  })
+  setValue('field.subfield.value', (state, action) => action.payload)
 );
-
-// equivalent to
-(state, action) => {
-  switch (action.type) {
-    case 'INCREASE_COUNTER':
-      return { ...state, counter: (state.counter || 0) + 1 };
-    case 'INCREASE_COUNTER':
-      return { ...state, counter: (state.counter || 0) - 1 };
-    case 'DYNAMIC_INCREASE_COUNTER':
-      return { ...state, counter: (state.counter || 0) + action.payload }
-  }
-}
 ```
 
 ### Normalize
 
-It is very simple to normalize array of entities into normalized structure
+It is very simple to normalize collection of entities into normalized structure
 
 ```js
 const reducer = composeReducer(
   onEach(
     (state, action) => action.entities,
-    // next composable reducers will be called with each entity as action
+    // next composable reducers will be called with each entity as value
 
     setValue(
       (state, action) => ['entities', action.id], // dynamically compute path
@@ -120,6 +100,35 @@ const reducer = composeReducer(
 }
 ```
 
+### Branch
+
+Branching reducer logic given an action type
+
+```js
+const reducer = composeReducer(
+  brancheAction({
+    INCREASE_COUNTER: incValue('counter', 1),
+    DECREASE_COUNTER: decValue('counter', 1),
+    DYNAMIC_INCREASE_COUNTER: incValue(
+      'counter',
+      (state, action) => action.payload
+    )
+  })
+);
+
+// equivalent to
+(state, action) => {
+  switch (action.type) {
+    case 'INCREASE_COUNTER':
+      return { ...state, counter: (state.counter || 0) + 1 };
+    case 'INCREASE_COUNTER':
+      return { ...state, counter: (state.counter || 0) - 1 };
+    case 'DYNAMIC_INCREASE_COUNTER':
+      return { ...state, counter: (state.counter || 0) + action.payload };
+  }
+};
+```
+
 ## Api
 
 WARNING: Api is a first draft and may change in the future.
@@ -138,9 +147,9 @@ Composable reducer will be applied in given order.
 import { composeReducer, incValue } from 'compose-reducer';
 
 const reducer = composeReducer(
-  incValue('counter1', 1),  // increase counter1 field by 1
+  incValue('counter1', 1), // increase counter1 field by 1
   incValue('counter2', 10), // then increase counter2 field by 10
-  incValue('counter1', 5),  // then increase counter1 field by 5
+  incValue('counter1', 5) // then increase counter1 field by 5
 );
 
 const initalState = { counter1: 0, counter2: 2 };
@@ -152,6 +161,23 @@ reducer(initialState); // { counter1: 6, counter2: 12 }
 Composable reducer are meant to be used within [composeReducer](#composereducer).
 
 ### Value composable reducer
+
+#### `initState`
+
+```ts
+initState(valueResolver: (state: any, action: any, context: object) => any | any): ComposableReducer
+```
+
+```ts
+const reducer = composeReducer(initState({ counter: 0 }));
+reducer(undefined); // { counter: 0 }
+
+// However
+reducer(null); // null
+reducer(0); // 0
+reducer(''); // ''
+reducer(false); // false
+```
 
 #### `setValue`
 
@@ -171,34 +197,20 @@ setValue(
 ```ts
 import { composeReducer, setValue } from 'compose-reducer';
 
-const reducer = composeReducer(
-  setValue('field.nestedField', 'hello world')
-);
+const reducer = composeReducer(setValue('field.nestedField', 'hello world'));
 
 const initialState = {};
 reducer(initialState); // { field: { nestedField: 'hello world' } }
 
 //  equivalent to (dynamic path)
-composeReducer(
-  setValue(
-    (state, action) => 'field.nestedField',
-    'hello world'
-  )
-);
+composeReducer(setValue((state, action) => 'field.nestedField', 'hello world'));
 
 // equivalent to (dynamic value)
-composeReducer(
-  setValue(
-    'field.nestedField',
-    (state, action) => 'hello world'
-  )
-);
+composeReducer(setValue('field.nestedField', (state, action) => 'hello world'));
 
 // In case value resolver is not provided, value will be resolved to given action
-const setSizeReducer = composeReducer(
-  setValue('size')
-);
-setSizeReducer({ size: 0 }, 10) // { size: 10 }
+const setSizeReducer = composeReducer(setValue('size'));
+setSizeReducer({ size: 0 }, 10); // { size: 10 }
 ```
 
 #### `unsetValue`
@@ -212,19 +224,13 @@ unsetValue(
 ```ts
 import { composeReducer, unsetValue } from 'compose-reducer';
 
-const reducer = composeReducer(
-  unsetValue('entities.1')
-)
+const reducer = composeReducer(unsetValue('entities.1'));
 
 const initalState = { entites: { 1: { id: '1' }, 42: { id: '42' } } };
-reducer(initialState) // { entites: { 42: { id: '42' } } }
+reducer(initialState); // { entites: { 42: { id: '42' } } }
 
 // equivalent to (dynamic path)
-const reducer = composeReducer(
-  unsetValue(
-    (state, action) => 'entites.1',
-  )
-)
+const reducer = composeReducer(unsetValue((state, action) => 'entites.1'));
 ```
 
 #### `incValue`
@@ -244,22 +250,18 @@ const initialState = { counter: 0 };
 reducer(initialState); // { counter: 1 }
 
 // equivalent to (dynamic path)
-composeReducer(incValue(
-  (state, action) => 'counter',
-  1
-));
+composeReducer(incValue((state, action) => 'counter', 1));
 
 // equivalent to (dynamic value)
-composeReducer(incValue(
- 'counter',
- (state, action) => 1,
-));
+composeReducer(incValue('counter', (state, action) => 1));
 
 // equivalent to (dynamic path and value)
-composeReducer(incValue(
- (state, action) => 'counter',
- (state, action) => 1,
-));
+composeReducer(
+  incValue(
+    (state, action) => 'counter',
+    (state, action) => 1
+  )
+);
 ```
 
 #### `decValue`
@@ -279,22 +281,18 @@ const initialState = { counter: 0 };
 reducer(initialState); // { counter: -1 }
 
 // equivalent to (dynamic path)
-composeReducer(decValue(
-  (state, action) => 'counter',
-  1
-));
+composeReducer(decValue((state, action) => 'counter', 1));
 
 // equivalent to (dynamic value)
-composeReducer(decValue(
- 'counter',
- (state, action) => 1,
-));
+composeReducer(decValue('counter', (state, action) => 1));
 
 // equivalent to (dynamic path and value)
-composeReducer(decValue(
- (state, action) => 'counter',
- (state, action) => 1,
-));
+composeReducer(
+  decValue(
+    (state, action) => 'counter',
+    (state, action) => 1
+  )
+);
 ```
 
 #### `pushValue`
@@ -312,25 +310,21 @@ import { composeReducer, pushValue } from 'compose-reducer';
 const reducer = composeReducer(pushValue('array', 10));
 const initialState = { array: null };
 const nextState = reducer(initialState); // { array: [10] }
-reducer(nextState) // { array: [10, 10] }
+reducer(nextState); // { array: [10, 10] }
 
 // equivalent to (dynamic path)
-composeReducer(pushValue(
-  (state, action) => 'array',
-  10
-));
+composeReducer(pushValue((state, action) => 'array', 10));
 
 // equivalent to (dynamic value)
-composeReducer(pushValue(
- 'array',
- (state, action) => 10,
-));
+composeReducer(pushValue('array', (state, action) => 10));
 
 // equivalent to (dynamic path and value)
-composeReducer(pushValue(
- (state, action) => 'array',
- (state, action) => 10,
-));
+composeReducer(
+  pushValue(
+    (state, action) => 'array',
+    (state, action) => 10
+  )
+);
 ```
 
 #### `pushValues`
@@ -348,25 +342,21 @@ import { composeReducer, pushValues } from 'compose-reducer';
 const reducer = composeReducer(pushValues('array', [1, 2, 3]));
 const initialState = { array: null };
 const nextState = reducer(initialState); // { array: [1, 2, 3 }
-reducer(nextState) // { array: [1, 2, 3, 1, 2, 3] }
+reducer(nextState); // { array: [1, 2, 3, 1, 2, 3] }
 
 // equivalent to (dynamic path)
-composeReducer(pushValues(
-  (state, action) => 'array',
-  [1, 2, 3]
-));
+composeReducer(pushValues((state, action) => 'array', [1, 2, 3]));
 
 // equivalent to (dynamic value)
-composeReducer(pushValues(
- 'array',
- (state, action) => [1, 2, 3],
-));
+composeReducer(pushValues('array', (state, action) => [1, 2, 3]));
 
 // equivalent to (dynamic path and value)
-composeReducer(pushValues(
- (state, action) => 'array',
- (state, action) => [1, 2, 3],
-));
+composeReducer(
+  pushValues(
+    (state, action) => 'array',
+    (state, action) => [1, 2, 3]
+  )
+);
 ```
 
 #### `popValues`
@@ -416,37 +406,53 @@ branchAction(
 ```
 
 ```ts
-import { composeReducer, branchAction, incValue, decValue } from 'compose-reducer';
+import {
+  composeReducer,
+  branchAction,
+  incValue,
+  decValue
+} from 'compose-reducer';
 
-const reducer = composeReducer(branchAction({
-  INC_COUNTER: incValue('counter', 1),
-  DEC_COUNTER: decValue('counter', 1),
-}));
+const reducer = composeReducer(
+  branchAction({
+    INC_COUNTER: incValue('counter', 1),
+    DEC_COUNTER: decValue('counter', 1)
+  })
+);
 
-const initialState = { counter: 0 }
-reducer(initialState, { type: 'INC_COUNTER' }) // { counter: 1 }
-reducer(initialState, { type: 'DEC_COUNTER' }) // { counter: -1 }
+const initialState = { counter: 0 };
+reducer(initialState, { type: 'INC_COUNTER' }); // { counter: 1 }
+reducer(initialState, { type: 'DEC_COUNTER' }); // { counter: -1 }
 
 // equivalent to
-composeReducer(branchAction(
-  ['INC_COUNTER', incValue('counter', 1)],
-  ['DEC_COUNTER', decValue('counter', 1)],
-));
+composeReducer(
+  branchAction(
+    ['INC_COUNTER', incValue('counter', 1)],
+    ['DEC_COUNTER', decValue('counter', 1)]
+  )
+);
 
 // equivalent to
-composeReducer(branchAction(
-  [(state, action) => action.type === 'INC_COUNTER', incValue('counter', 1)],
-  [(state, action) => action.type === 'DEC_COUNTER', decValue('counter', 1)],
-))
+composeReducer(
+  branchAction(
+    [(state, action) => action.type === 'INC_COUNTER', incValue('counter', 1)],
+    [(state, action) => action.type === 'DEC_COUNTER', decValue('counter', 1)]
+  )
+);
 ```
 
 Array branching may have a liste of action type or predicate before the actual reducer
 Type and predicate of a same stage will apply reducer only once
 
 ```ts
-const reducer = composeReducer(branchAction(
-  [(state, action) => action.type === 'INC_COUNTER', 'INC_COUNTER', 'INCREASE', incValue('counter', 1)]
-));
+const reducer = composeReducer(
+  branchAction([
+    (state, action) => action.type === 'INC_COUNTER',
+    'INC_COUNTER',
+    'INCREASE',
+    incValue('counter', 1)
+  ])
+);
 const initalState = { counter: 0 };
 reducer(initialState, 'INC_COUNTER'); // { counter: 1 }
 reducer(initialState, 'INCREASE'); // { counter: 1 }
@@ -455,12 +461,14 @@ reducer(initialState, 'INCREASE'); // { counter: 1 }
 In case predicate match in different stages, each reducer will be applied
 
 ```ts
-const reducer = composeReducer(branchAction(
-  [(state, action) => action.type === 'INC_COUNTER', incValue('counter', 1)],
-  ['INC_COUNTER', 'INCREASE', incValue('counter', 1)]
-));
+const reducer = composeReducer(
+  branchAction(
+    [(state, action) => action.type === 'INC_COUNTER', incValue('counter', 1)],
+    ['INC_COUNTER', 'INCREASE', incValue('counter', 1)]
+  )
+);
 
-const initalState = { counter: 0 }
+const initalState = { counter: 0 };
 reducer(initialState, { type: 'INC_COUNTER' }); // { counter: 2 }
 reducer(initialState, { type: 'INCREASE' }); // { counter: 1 }
 ```
@@ -485,10 +493,10 @@ const reducer = composeReducer(
   mapAction(
     (state, action) => action.payload,
     setValue('field') // received action will be field 'payload' of initial action
-  ),
-)
+  )
+);
 
-reducer({ field: 0 }, { payload: 100 }) // { field: 100 }
+reducer({ field: 0 }, { payload: 100 }); // { field: 100 }
 ```
 
 ### `mapActions`
@@ -503,22 +511,31 @@ mapActions(
 ```
 
 ```ts
-import { composeReducer, mapActions, setValue, pushValue } from 'compose-reducer';
+import {
+  composeReducer,
+  mapActions,
+  setValue,
+  pushValue
+} from 'compose-reducer';
 
 const reducer = composeReducer(
   mapActions(
     (state, action) => action.items,
-    setValue(
-      (state, action) => ['entities', action.id],
-    ),
-    pushValue(
-      'ids',
-      (state, action) => action.id,
-    )
+    setValue((state, action) => ['entities', action.id]),
+    pushValue('ids', (state, action) => action.id)
   )
-)
+);
 
-reducer({ entities: {}, ids: [] }, { items: [{ id: 1, name: 'item 1' }, { id: 2, name: 'item 2' }, { id: 3, name: 'item 3' }] })
+reducer(
+  { entities: {}, ids: [] },
+  {
+    items: [
+      { id: 1, name: 'item 1' },
+      { id: 2, name: 'item 2' },
+      { id: 3, name: 'item 3' }
+    ]
+  }
+);
 // {
 //   entities: { 1: { id: 1, name: 'item 1' }, 2: { id: 2, name: 'item 2' }, 3: { id: 3, name: 'item 3' } } }
 //   ids: [1, 2, 3]
@@ -535,17 +552,21 @@ import { composeReducer, onEach, setValue, pushValue } from 'compose-reducer';
 const reducer = composeReducer(
   onEach(
     (state, action) => action.items,
-    setValue(
-      (state, action) => ['entities', action.id],
-    ),
-    pushValue(
-      'ids',
-      (state, action) => action.id,
-    )
+    setValue((state, action) => ['entities', action.id]),
+    pushValue('ids', (state, action) => action.id)
   )
-)
+);
 
-reducer({ entities: {}, ids: [] }, { items: [{ id: 1, name: 'item 1' }, { id: 2, name: 'item 2' }, { id: 3, name: 'item 3' }] })
+reducer(
+  { entities: {}, ids: [] },
+  {
+    items: [
+      { id: 1, name: 'item 1' },
+      { id: 2, name: 'item 2' },
+      { id: 3, name: 'item 3' }
+    ]
+  }
+);
 // {
 //   entities: { 1: { id: 1, name: 'item 1' }, 2: { id: 2, name: 'item 2' }, 3: { id: 3, name: 'item 3' } } }
 //   ids: [1, 2, 3]

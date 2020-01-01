@@ -4,8 +4,8 @@
   "description": "composable reducer",
   "keywords": [
     "redux",
-    "reducer",
-    "compose"
+    "compose",
+    "reducer"
   ],
   "repository": "https://github.com/Patrick-lin/compose-reducer.git",
   "author": "Patrick <shantry@hotmail.fr>",
@@ -19,6 +19,7 @@
     "src"
   ],
   "scripts": {
+    "clean": "rm -rf es/ lib/",
     "test": "jest test",
     "test:watch": "yarn test --watch",
     "test:cov": "yarn test --coverage",
