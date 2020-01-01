@@ -663,11 +663,34 @@ This may be usefull to create reusable reducer or split reducer logic
 composable(...composableReducers: ComposableReducer[]): ComposableReducer
 ```
 
-Using `composable` with `at` allow to separate substate reducing logic. (This kind of )
+Using `composable` with `at` allow to separate substate reducing logic. (For redux users, this is a way to simulate `combineReducers`)
 
 ```ts
-// auth.js
-export const auth = composable(branchActions({}));
+import {
+  composable,
+  branchActions,
+  pushValue,
+  composeReduer,
+  at,
+  initState
+} from 'composable-reducer';
 
-const rootReducer = composeReducer(at('auth', auth));
+export const reduceTodos = composable(
+  initState([]),
+  branchActions({
+    ADD_TODO: pushValue(null, (state, action) => ({ text: action.text }))
+  })
+);
+
+export const reduceVisibility = composable(
+  initState('SHOW_ALL'),
+  branchActions({
+    SET_VISIBILITY_FILTER: setValue(null, (state, action) => action.visibility)
+  })
+);
+
+const rootReducer = composeReducer(
+  at('todos', reduceTodos),
+  at('visibility', reduceVisibility)
+);
 ```
