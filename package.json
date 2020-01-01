@@ -7,7 +7,7 @@
     "compose",
     "reducer"
   ],
-  "repository": "https://github.com/Patrick-lin/compose-reducer.git",
+  "repository": "https://github.com/shantlr/compose-reducer.git",
   "author": "Patrick <shantry@hotmail.fr>",
   "license": "MIT",
   "private": false,

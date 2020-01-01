@@ -24,9 +24,12 @@ Compose reducer has been written being used with redux in mind but it is simply 
       - [popValues](#popvalues)
     - [Flow composable reducer](#flow-composable-reducer)
       - [branch](#branch)
+      - [predicate](#predicate)
+      - [ifTrue](#iftrue)
+      - [ifFalse](#iffalse)
       - [branchAction](#branchaction)
-    - [mapAction](#mapaction)
-    - [mapActions](#mapactions)
+      - [mapAction](#mapaction)
+      - [mapActions](#mapactions)
       - [onEach](#oneach)
     - [Context](#context)
       - [withContext](#withcontext)
@@ -400,6 +403,68 @@ branch(
 ): ComposableReducer
 ```
 
+#### `predicate`
+
+Predicate take a predicate function and put resolved value into context of all given composable reducers.
+You can provide a context field name as first argument to specify which field the value should be put at. (By default a symbol is used)
+
+`predicate` is mainly designed to be used with `ifTrue` and `ifFalse`. It allow branching like `branch` in a more expressive way.
+
+```ts
+predicate(
+  predicateResolver: (state: any, action: any, context: object) => boolean,
+  ...composableReducers: ComposableReducer[]
+): ComposableReducer
+predicate(
+  contextFieldName: string,
+  predicateResolver: (state: any, action: any, context: object) => boolean,
+  ...composableReducers: ComposableReducer[]
+): ComposableReducer
+```
+
+```ts
+import {
+  composeReducer,
+  predicate,
+  ifTrue,
+  ifFalse,
+  setValue
+} from 'compose-reducer';
+
+const reducer = composeReducer(
+  predicate(
+    (state, action) => action.isTrue,
+    ifTrue(setValue(null, 'isTrue)),
+    ifFalse(setValue(null, 'isFalse'))
+  )
+);
+
+reducer(null, { isTrue: true }) // 'isTrue'
+reducer(null, { isTrue: false }) // 'isFalse'
+```
+
+#### `ifTrue`
+
+Call given composable reducers if context field is true.
+
+You can provide context field name used as predicate (by default use same symbol as predicate as context field)
+
+```ts
+ifTrue(...composableReducers: ComposableReducer[]): ComposableReducer
+ifTrue(contextFieldName: string, ...composableReducers: ComposableReducer[]): ComposableReducer
+```
+
+#### `ifFalse`
+
+Call given composable reducers if context field is false.
+
+You can provide context field name used as predicate (by default use same symbol as predicate as context field)
+
+```ts
+ifFalse(...composableReducers: ComposableReducer[]): ComposableReducer
+ifFalse(contextFieldName: string, ...composableReducers: ComposableReducer[]): ComposableReducer
+```
+
 #### `branchAction`
 
 ```ts
@@ -477,7 +542,7 @@ reducer(initialState, { type: 'INC_COUNTER' }); // { counter: 2 }
 reducer(initialState, { type: 'INCREASE' }); // { counter: 1 }
 ```
 
-### `mapAction`
+#### `mapAction`
 
 Apply all given composable reducer with resolved value as action.
 
@@ -503,7 +568,7 @@ const reducer = composeReducer(
 reducer({ field: 0 }, { payload: 100 }); // { field: 100 }
 ```
 
-### `mapActions`
+#### `mapActions`
 
 Apply all given composable reducers on each resolved action
 
