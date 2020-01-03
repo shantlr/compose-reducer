@@ -5,7 +5,9 @@
 
 Compose reducer helps you create less verbose and more expressive reducer besides handling all the immutable state stuff for you.
 
-Compose reducer has been written being used with redux in mind but it is simply a declarative way of creating a reducer. As such it can be used in other context where reducer are helpfull.
+Compose reducer has been written being used with redux in mind but it is mostly a declarative way of creating a reducer. As such it can be used in other context where reducer are helpfull.
+
+WARNING: This package is still a first draft.
 
 - [Compose reducer](#compose-reducer)
   - [Install](#install)
@@ -37,6 +39,8 @@ Compose reducer has been written being used with redux in mind but it is simply 
     - [Context](#context)
       - [withContext](#withcontext)
       - [at](#at)
+      - [provideResolver](#provideresolver)
+      - [injectResolver](#injectresolver)
     - [Utils](#utils)
       - [composable](#composable)
 
@@ -701,6 +705,37 @@ at(
   pathResolver: string | (state: any, action: any, context: object) => string,
   ...composableReducers: ComposableReducer[]
 ): ComposableReducer
+```
+
+#### `provideResolver`
+
+To facilitate reducer reusability `provideResolver` allow very simple dependency injection in combinaison with `injectResolver`
+
+```ts
+provideResolver(reducerMap: { [reducrerKey: string]: ComposableReducer }, ...composableReducers: ComposableReduer[]): ComposableReducer
+```
+
+```ts
+const reducer = composeReducer(
+  provideResolver(
+    {
+      increaseCounter: incValue('counter', 1),
+    },
+    branchAction({
+      BUTTON_CLICKED: injectResolver('increaseCounter'),
+      KEY_PRESSED: injectResolver('increaseCounter'),
+    }),
+  )
+}))
+
+reducer({ counter: 0 }, { type: 'BUTTON_CLICKED' }) // { counter: 1 }
+reducer({ counter: 0 }, { type: 'KEY_PRESSED' }) // { counter: 1 }
+```
+
+#### `injectResolver`
+
+```ts
+injectResolver(reducerKey: string): ComposableReducer
 ```
 
 ```ts
