@@ -441,13 +441,13 @@ import {
 const reducer = composeReducer(
   predicate(
     (state, action) => action.isTrue,
-    ifTrue(setValue(null, 'isTrue)),
+    ifTrue(setValue(null, 'isTrue')),
     ifFalse(setValue(null, 'isFalse'))
   )
 );
 
-reducer(null, { isTrue: true }) // 'isTrue'
-reducer(null, { isTrue: false }) // 'isFalse'
+reducer(null, { isTrue: true }); // 'isTrue'
+reducer(null, { isTrue: false }); // 'isFalse'
 ```
 
 #### `ifTrue`
