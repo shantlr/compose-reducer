@@ -1,7 +1,7 @@
 {
   "name": "compose-reducer",
   "version": "0.1.3",
-  "description": "composable reducer",
+  "description": "Create reducer in a expressive (and opiniated) way.",
   "keywords": [
     "redux",
     "compose",
