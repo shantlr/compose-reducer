@@ -735,7 +735,7 @@ Like `context`, provided reducers are only available to provided sub reducers.
 In case a reducer has been previously provided, it will be overridden.
 
 ```ts
-provideResolver(reducerMap: { [reducrerKey: string]: ComposableReducer }, ...composableReducers: ComposableReduer[]): ComposableReducer
+provideResolver(reducerMap: { [reducerKey: string]: ComposableReducer }, ...composableReducers: ComposableReduer[]): ComposableReducer
 ```
 
 ```ts
