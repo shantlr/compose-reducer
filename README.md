@@ -3,7 +3,7 @@
 [![build status](https://img.shields.io/travis/shantlr/compose-reducer)](https://travis-ci.org/shantlr/compose-reducer)
 [![npm version](https://img.shields.io/npm/v/compose-reducer)](https://www.npmjs.com/package/compose-reducer)
 
-Compose reducer helps you create less verbose and more expressive reducer besides handling all the immutable state stuff for you.
+Create reducer in a expressive (but opinitated) way.
 
 Compose reducer has been written being used with redux in mind but it is mostly a declarative way of creating a reducer. As such it can be used in other context where reducer are helpfull.
 
