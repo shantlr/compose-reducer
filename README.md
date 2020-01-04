@@ -727,7 +727,12 @@ reducer({ counter: 0, field: { counter: 0, subfield: { counter: 0 } } }) // { co
 
 #### `provideResolver`
 
-To facilitate reducer reusability `provideResolver` allow very simple dependency injection in combinaison with `injectResolver`
+WARNING: experimental
+
+To facilitate reducer reusability `s` allow very simple dependency injection in combinaison with `injectResolver`.
+
+Like `context`, provided reducers are only available to provided sub reducers.
+In case a reducer has been previously provided, it will be overridden.
 
 ```ts
 provideResolver(reducerMap: { [reducrerKey: string]: ComposableReducer }, ...composableReducers: ComposableReduer[]): ComposableReducer
@@ -737,17 +742,46 @@ provideResolver(reducerMap: { [reducrerKey: string]: ComposableReducer }, ...com
 const reducer = composeReducer(
   provideResolver(
     {
-      increaseCounter: incValue('counter', 1),
+      // Expected action is to item itself
+      updateItem: setValue((state, action) => ['items', action.id])
     },
     branchAction({
-      BUTTON_CLICKED: injectResolver('increaseCounter'),
-      KEY_PRESSED: injectResolver('increaseCounter'),
-    }),
+      // map action to respect signature
+      UPDATE_ITEM: mapAction(
+        (state, action) => action.item,
+        injectResolver('updateItem')
+      ),
+      UPDATE_ITEMS: onEach(
+        (state, action) => action.items,
+        injectResolver('updateItem')
+      )
+    })
   )
-}))
+);
 
-reducer({ counter: 0 }, { type: 'BUTTON_CLICKED' }) // { counter: 1 }
-reducer({ counter: 0 }, { type: 'KEY_PRESSED' }) // { counter: 1 }
+reducer({ items: {} }, { type: 'UPDATE_ITEM', item: { id: 'item_1' } }); // { items: { 'item_1': { id: 'item_1' } } }
+
+reducer(
+  { items: {} },
+  {
+    type: 'UPDATE_ITEMS',
+    items: [{ id: 'item_1' }, { id: 'item_2' }, { id: 'item_3' }]
+  }
+); // { items: { 'item_1': { id: 'item_1' }, 'item_2': { id: 'item_2' } } }
+```
+
+Obviously simpliest way to reuse reducer would be to create a variable.
+
+```ts
+const updateItem = setValue((state, action) => ['items', action.id]);
+
+const reducer = composeReducer(
+  branchAction({
+    // map action to respect signature
+    UPDATE_ITEM: mapAction((state, action) => action.item, updateItem),
+    UPDATE_ITEMS: onEach((state, action) => action.items, updateItem)
+  })
+);
 ```
 
 #### `injectResolver`
