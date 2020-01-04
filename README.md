@@ -707,6 +707,24 @@ at(
 ): ComposableReducer
 ```
 
+```ts
+import { composeReducer, at, incValue } from 'compose-reducer';
+
+const reducer = composeReducer(
+  at(
+    'field',
+    incValue('counter', 10) // will be applied to 'field'
+    at(
+      'subfield',
+      incValue('counter', 200), // will be applied to 'field.subfield'
+    )
+  ),
+  incValue('counter', 5) // is not affected by at
+)
+
+reducer({ counter: 0, field: { counter: 0, subfield: { counter: 0 } } }) // { counter: 5, field: { counter: 10, subfield: { counter: 200 } }  }
+```
+
 #### `provideResolver`
 
 To facilitate reducer reusability `provideResolver` allow very simple dependency injection in combinaison with `injectResolver`
@@ -736,24 +754,6 @@ reducer({ counter: 0 }, { type: 'KEY_PRESSED' }) // { counter: 1 }
 
 ```ts
 injectResolver(reducerKey: string): ComposableReducer
-```
-
-```ts
-import { composeReducer, at, incValue } from 'compose-reducer';
-
-const reducer = composeReducer(
-  at(
-    'field',
-    incValue('counter', 10) // will be applied to 'field'
-    at(
-      'subfield',
-      incValue('counter', 200), // will be applied to 'field.subfield'
-    )
-  ),
-  incValue('counter', 5) // is not affected by at
-)
-
-reducer({ counter: 0, field: { counter: 0, subfield: { counter: 0 } } }) // { counter: 5, field: { counter: 10, subfield: { counter: 200 } }  }
 ```
 
 ### Utils
