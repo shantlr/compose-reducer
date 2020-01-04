@@ -91,7 +91,7 @@ const reducer = composeReducer(
 
     setValue(
       (state, action) => ['entities', action.id], // dynamically compute path
-      // if value resolver is not provided, action will be used as action
+      // if value resolver is not provided, action will be used as value
     ),
 
     // we also push each entity id into 'ids' field
