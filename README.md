@@ -16,33 +16,33 @@ WARNING: This package is still a first draft.
     - [Normalize](#normalize)
     - [Branch](#branch)
   - [Api](#api)
-    - [composeReducer](#composereducer)
+    - [`composeReducer`](#composereducer)
     - [Composable Reducer](#composable-reducer)
     - [Value composable reducer](#value-composable-reducer)
-      - [initState](#initstate)
-      - [setValue](#setvalue)
-      - [unsetValue](#unsetvalue)
-      - [incValue](#incvalue)
-      - [decValue](#decvalue)
-      - [pushValue](#pushvalue)
-      - [pushValues](#pushvalues)
-      - [popValues](#popvalues)
+      - [`initState`](#initstate)
+      - [`setValue`](#setvalue)
+      - [`unsetValue`](#unsetvalue)
+      - [`incValue`](#incvalue)
+      - [`decValue`](#decvalue)
+      - [`pushValue`](#pushvalue)
+      - [`pushValues`](#pushvalues)
+      - [`popValues`](#popvalues)
     - [Flow composable reducer](#flow-composable-reducer)
-      - [branch](#branch)
-      - [predicate](#predicate)
-      - [ifTrue](#iftrue)
-      - [ifFalse](#iffalse)
-      - [branchAction](#branchaction)
-      - [mapAction](#mapaction)
-      - [mapActions](#mapactions)
-      - [onEach](#oneach)
+      - [`branch`](#branch-1)
+      - [`predicate`](#predicate)
+      - [`ifTrue`](#iftrue)
+      - [`ifFalse`](#iffalse)
+      - [`branchAction`](#branchaction)
+      - [`mapAction`](#mapaction)
+      - [`mapActions`](#mapactions)
+      - [`onEach`](#oneach)
     - [Context](#context)
-      - [withContext](#withcontext)
-      - [at](#at)
-      - [provideResolver](#provideresolver)
-      - [injectResolver](#injectresolver)
+      - [`withContext`](#withcontext)
+      - [`at`](#at)
+      - [`provideResolver`](#provideresolver)
+      - [`injectResolver`](#injectresolver)
     - [Utils](#utils)
-      - [composable](#composable)
+      - [`composable`](#composable)
 
 ## Install
 
@@ -54,7 +54,7 @@ Here some usage of compose-reducer
 
 ### Update state
 
-In case we would want to update a value in nested sub state, a straightforward way to do this would be a reducer like this:
+In case we would want to update a value in nestedp state, a straightforward way to do this would be a reducer like this:
 
 ```js
 const reducer = (state, action) => {
@@ -83,42 +83,62 @@ const reducer = composeReducer(
 
 It is very simple to normalize collection of entities into normalized structure
 
-```js
+Straightforward way:
+
+```ts
+const reducer = (state, action) => {
+  return {
+    ...state,
+    entities: action.entities.reduce((entities, entity) => {
+      return {
+        ...entities,
+        [entity.id]: entity
+      };
+    }, state.entities),
+    ids: state.ids.concat(action.entities.map(({ id }) => id))
+  };
+};
+```
+
+With `compose-reducer`:
+
+```ts
 const reducer = composeReducer(
   onEach(
     (state, action) => action.entities,
     // next composable reducers will be called with each entity as value
 
     setValue(
-      (state, action) => ['entities', action.id], // dynamically compute path
+      (state, action) => ['entities', action.id] // dynamically compute path
       // if value resolver is not provided, action will be used as value
     ),
 
     // we also push each entity id into 'ids' field
     pushValue('ids', (state, action) => action.id)
   )
-)
-
-// equivalent to
-(state, action) => {
-  return {
-    ...state,
-    entities: action.entities.reduce((entities, entity) => {
-      return {
-        ...entities,
-        [entity.id]: entity,
-      }
-    }, state.entities),
-    ids: state.ids.concat(action.entities.map(({ id }) => id))
-  }
-}
+);
 ```
 
 ### Branch
 
 Branching reducer logic given an action type
 
-```js
+Redux like way:
+
+```ts
+const reducer = (state, action) => {
+  switch (action.type) {
+    case 'INCREASE_COUNTER':
+      return { ...state, counter: (state.counter || 0) + 1 };
+    case 'INCREASE_COUNTER':
+      return { ...state, counter: (state.counter || 0) - 1 };
+    case 'DYNAMIC_INCREASE_COUNTER':
+      return { ...state, counter: (state.counter || 0) + action.payload };
+  }
+};
+```
+
+```ts
 const reducer = composeReducer(
   brancheAction({
     INCREASE_COUNTER: incValue('counter', 1),
@@ -129,18 +149,6 @@ const reducer = composeReducer(
     )
   })
 );
-
-// equivalent to
-(state, action) => {
-  switch (action.type) {
-    case 'INCREASE_COUNTER':
-      return { ...state, counter: (state.counter || 0) + 1 };
-    case 'INCREASE_COUNTER':
-      return { ...state, counter: (state.counter || 0) - 1 };
-    case 'DYNAMIC_INCREASE_COUNTER':
-      return { ...state, counter: (state.counter || 0) + action.payload };
-  }
-};
 ```
 
 ## Api
@@ -729,7 +737,7 @@ reducer({ counter: 0, field: { counter: 0, subfield: { counter: 0 } } }) // { co
 
 WARNING: experimental
 
-To facilitate reducer reusability `s` allow very simple dependency injection in combinaison with `injectResolver`.
+To facilitate reducer reusability `provideResolver` allow very simple dependency injection in combinaison with `injectResolver`.
 
 Like `context`, provided reducers are only available to provided sub reducers.
 In case a reducer has been previously provided, it will be overridden.
