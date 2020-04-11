@@ -6,15 +6,16 @@ export const branch = (predicate, trueReducers, falseReducers) => {
   const reduceTrueCase = wrapReducers(trueReducers);
   const reduceFalseCase = wrapReducers(falseReducers);
 
-  const test = trackingState => resolve(predicate, trackingState);
+  const testPredicate = trackingState => resolve(predicate, trackingState);
 
-  return createReducer(trackingState => {
-    if (test(trackingState)) {
+  const branchReducer = trackingState => {
+    if (testPredicate(trackingState)) {
       if (reduceTrueCase) {
         reduceTrueCase(trackingState);
       }
     } else if (reduceFalseCase) {
       reduceFalseCase(trackingState);
     }
-  });
+  };
+  return createReducer(branchReducer);
 };

@@ -14,27 +14,29 @@ export const pushValues = (
   valuesResolver,
   indexResolver = lastIndexResolver
 ) => {
+  const pushValuesHandler = (trackingState, path, values, oldValues) => {
+    if (!values || !values.length) {
+      return;
+    }
+
+    if (!oldValues || isIterable(oldValues)) {
+      const index = resolve(indexResolver, trackingState, { oldValues });
+
+      const nextValue = [...(oldValues || [])];
+      nextValue.splice(index, 0, ...values);
+
+      trackingState.updateState(path, nextValue);
+    } else {
+      throw new Error(
+        `[pushValues] previous value is not iterable ${oldValues}`
+      );
+    }
+  };
+
   return setValueBase(
     pathResolver,
     valuesResolver,
-    (trackingState, path, values, oldValues) => {
-      if (!values || !values.length) {
-        return;
-      }
-
-      if (!oldValues || isIterable(oldValues)) {
-        const index = resolve(indexResolver, trackingState, { oldValues });
-
-        const nextValue = [...(oldValues || [])];
-        nextValue.splice(index, 0, ...values);
-
-        trackingState.updateState(path, nextValue);
-      } else {
-        throw new Error(
-          `[pushValues] previous value is not iterable ${oldValues}`
-        );
-      }
-    },
+    pushValuesHandler,
     'pushValues'
   );
 };
@@ -44,23 +46,25 @@ export const pushValue = (
   valueResolver,
   indexResolver = lastIndexResolver
 ) => {
+  const pushValueHandler = (trackingState, path, value, oldValues) => {
+    if (!oldValues || isIterable(oldValues)) {
+      const index = resolve(indexResolver, trackingState, { oldValues });
+
+      const nextValue = [...(oldValues || [])];
+      nextValue.splice(index, 0, value);
+
+      trackingState.updateState(path, nextValue);
+    } else {
+      throw new Error(
+        `[pushValue] previous value is not iterable ${oldValues}`
+      );
+    }
+  };
+
   return setValueBase(
     pathResolver,
     valueResolver,
-    (trackingState, path, value, oldValues) => {
-      if (!oldValues || isIterable(oldValues)) {
-        const index = resolve(indexResolver, trackingState, { oldValues });
-
-        const nextValue = [...(oldValues || [])];
-        nextValue.splice(index, 0, value);
-
-        trackingState.updateState(path, nextValue);
-      } else {
-        throw new Error(
-          `[pushValue] previous value is not iterable ${oldValues}`
-        );
-      }
-    },
+    pushValueHandler,
     'pushValue'
   );
 };

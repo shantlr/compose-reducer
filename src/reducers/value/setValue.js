@@ -28,12 +28,10 @@ export const setValueBase = (
   return createReducer(setValueReducer);
 };
 
-export const setValue = (pathResolver, valueResolver) =>
-  setValueBase(
-    pathResolver,
-    valueResolver,
-    (trackingState, path, value) => {
-      trackingState.updateState(path, value);
-    },
-    'setValue'
-  );
+export const setValue = (pathResolver, valueResolver) => {
+  const setValueHandler = (trackingState, path, value) => {
+    trackingState.updateState(path, value);
+  };
+
+  return setValueBase(pathResolver, valueResolver, setValueHandler, 'setValue');
+};

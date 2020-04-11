@@ -6,6 +6,7 @@ import { TrackingState } from './trackingState';
  */
 const initTrackingState = (state, action) => new TrackingState(state, action);
 
+const extractStateFromTrackingState = trackingState => trackingState.nextState;
 /**
  * Compose reducers
  */
@@ -13,7 +14,7 @@ export const composeReducer = (...composableReducers) => {
   return pipe(
     initTrackingState,
     ...composableReducers,
-    trackingState => trackingState.nextState // last step: extract computed next state
+    extractStateFromTrackingState // last step: extract computed next state
   );
 };
 

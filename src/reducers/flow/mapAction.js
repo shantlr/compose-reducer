@@ -5,12 +5,12 @@ import { createReducer } from '../../helpers/createReducer';
 
 export const mapAction = (actionResolver, ...composableReducers) => {
   const valueResolver = wrapValueResolver(actionResolver);
-  return withContextBase(
-    trackingState => ({
-      [ACTION_OVERRIDE_SYMBOL]: valueResolver(trackingState)
-    }),
-    composableReducers
-  );
+
+  const mapContextAction = trackingState => ({
+    [ACTION_OVERRIDE_SYMBOL]: valueResolver(trackingState)
+  });
+
+  return withContextBase(mapContextAction, composableReducers);
 };
 
 export const mapActions = (actionsResolver, ...composableReducers) => {
@@ -19,14 +19,17 @@ export const mapActions = (actionsResolver, ...composableReducers) => {
   return createReducer(trackingState => {
     const actions = resolveActions(trackingState);
 
-    const resolve = (action, index) =>
-      withContextBase(
-        () => ({
-          [ACTION_OVERRIDE_SYMBOL]: action,
-          actionKey: index
-        }),
+    const resolve = (action, index) => {
+      const mapContextAction = () => ({
+        [ACTION_OVERRIDE_SYMBOL]: action,
+        actionKey: index
+      });
+
+      return withContextBase(
+        mapContextAction,
         composableReducers
       )(trackingState);
+    };
 
     if (Array.isArray(actions)) {
       actions.forEach(resolve);
