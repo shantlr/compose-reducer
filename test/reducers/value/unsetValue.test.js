@@ -8,6 +8,15 @@ describe('reducers', () => {
         expect(reducer({ hello: 'world' })).toEqual(undefined);
       });
 
+      it('should do no op if path is nil', () => {
+        expect(composeReducer(unsetValue(null))('hello')).toEqual('hello');
+        expect(composeReducer(unsetValue(undefined))('hello')).toEqual('hello');
+        expect(composeReducer(unsetValue(() => null))('hello')).toEqual(
+          'hello'
+        );
+        expect(composeReducer(unsetValue(() => {}))('hello')).toEqual('hello');
+      });
+
       describe('when path is static', () => {
         it('should throw an error when path is invalid', () => {
           expect(() => unsetValue(true)).toThrow(

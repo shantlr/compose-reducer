@@ -3,6 +3,10 @@ import { isFunction } from '../utils/isFunction';
 import { isRootPath } from '../utils/isRootPath';
 import { get } from '../utils/get';
 import { isNumber } from '../utils/isNumber';
+import { isNil } from '../utils/isNil';
+
+export const NO_OP = Symbol('no_op: resolved path is nil');
+export const resolveNoOp = () => NO_OP;
 
 const resolveRelativePath = (trackingState, path) => {
   return [...trackingState.getPath(), ...(path || [])];
@@ -27,6 +31,10 @@ export const resolve = (resolver, trackingState, additionalMeta) => {
 };
 
 export const wrapPathResolver = pathResolver => {
+  if (isNil(pathResolver)) {
+    return resolveNoOp;
+  }
+
   // static array path
   if (Array.isArray(pathResolver)) {
     return staticRelativePathResolve(pathResolver);
@@ -50,6 +58,10 @@ export const wrapPathResolver = pathResolver => {
   if (isFunction(pathResolver)) {
     return trackingState => {
       const path = resolve(pathResolver, trackingState);
+
+      if (isNil(path)) {
+        return NO_OP;
+      }
 
       if (Array.isArray(path)) {
         return resolveRelativePath(trackingState, path);

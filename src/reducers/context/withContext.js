@@ -10,6 +10,11 @@ export const withContextBase = (
 
   return createReducer(trackingState => {
     const additionnalContext = resolveAdditionalContext(trackingState);
+
+    if (!additionnalContext) {
+      return;
+    }
+
     const oldContext = trackingState.context;
 
     // new context

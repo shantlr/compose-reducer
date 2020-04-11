@@ -9,11 +9,11 @@ import {
 } from '../../src';
 
 describe('recipes', () => {
-  describe('combineReducerr', () => {
+  describe('combineReducer', () => {
     const reduceTodos = composable(
       initState([]),
       branchAction({
-        ADD_TODO: pushValue(null, (state, action) => ({ text: action.text }))
+        ADD_TODO: pushValue('', (state, action) => ({ text: action.text }))
       })
     );
 
@@ -21,7 +21,7 @@ describe('recipes', () => {
       initState('SHOW_ALL'),
       branchAction({
         SET_VISIBILITY_FILTER: setValue(
-          null,
+          '',
           (state, action) => action.visibility
         )
       })

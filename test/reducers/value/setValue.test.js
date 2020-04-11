@@ -3,9 +3,24 @@ import { setValue, composeReducer } from '../../../src';
 describe('reducers', () => {
   describe('value', () => {
     describe('setValue', () => {
+      it('should do no op if path is nil', () => {
+        expect(
+          composeReducer(setValue(() => null, 'hello world'))('hello')
+        ).toEqual('hello');
+        expect(composeReducer(setValue(null, 'hello world'))('hello')).toEqual(
+          'hello'
+        );
+        expect(
+          composeReducer(setValue(undefined, 'hello world'))('hello')
+        ).toEqual('hello');
+        expect(
+          composeReducer(setValue(() => {}, 'hello world'))('hello')
+        ).toEqual('hello');
+      });
+
       it('should set root value', () => {
         const value = { hello: 'world' };
-        const reducer = composeReducer(setValue(null, value));
+        const reducer = composeReducer(setValue('', value));
 
         expect(reducer(null)).toBe(value);
         expect(reducer('something else')).toBe(value);

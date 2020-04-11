@@ -9,6 +9,23 @@ describe('reducers', () => {
         trackingState = new TrackingState();
       });
 
+      describe('when path is nil', () => {
+        it('should not call reducers', () => {
+          const composableReducer = jest.fn();
+          at(null, composableReducer)(trackingState);
+          expect(composableReducer).not.toHaveBeenCalled();
+
+          at(undefined, composableReducer)(trackingState);
+          expect(composableReducer).not.toHaveBeenCalled();
+
+          at(() => null, composableReducer)(trackingState);
+          expect(composableReducer).not.toHaveBeenCalled();
+
+          at(() => undefined, composableReducer)(trackingState);
+          expect(composableReducer).not.toHaveBeenCalled();
+        });
+      });
+
       describe('when path is string', () => {
         it('should not path when given path is root', () => {
           let path;

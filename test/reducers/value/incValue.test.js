@@ -10,6 +10,13 @@ describe('reducers', () => {
         expect(reducer(3)).toEqual(4);
       });
 
+      it('should do no op if path is nil', () => {
+        expect(composeReducer(incValue(null, 10))(0)).toEqual(0);
+        expect(composeReducer(incValue(undefined, 10))(0)).toEqual(0);
+        expect(composeReducer(incValue(() => null, 10))(0)).toEqual(0);
+        expect(composeReducer(incValue(() => {}, 10))(0)).toEqual(0);
+      });
+
       describe('when path is static', () => {
         it('should throw an error when path is invalid', () => {
           expect(() => incValue(true)).toThrow(

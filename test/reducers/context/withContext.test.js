@@ -66,6 +66,23 @@ describe('reducers', () => {
 
         expect(trackingState.context).toEqual({});
       });
+
+      describe('when no context is resolved', () => {
+        it('should not call reducers', () => {
+          const composableReducer = jest.fn();
+          withContext(null, composableReducer)(trackingState);
+          expect(composableReducer).not.toHaveBeenCalled();
+
+          withContext(undefined, composableReducer)(trackingState);
+          expect(composableReducer).not.toHaveBeenCalled();
+
+          withContext(() => null, composableReducer)(trackingState);
+          expect(composableReducer).not.toHaveBeenCalled();
+
+          withContext(() => undefined, composableReducer)(trackingState);
+          expect(composableReducer).not.toHaveBeenCalled();
+        });
+      });
     });
   });
 });

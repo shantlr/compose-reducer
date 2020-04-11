@@ -1,5 +1,9 @@
 import { createReducer } from '../../helpers/createReducer';
-import { wrapPathResolver, wrapValueResolver } from '../../helpers/resolve';
+import {
+  wrapPathResolver,
+  wrapValueResolver,
+  NO_OP
+} from '../../helpers/resolve';
 import { get } from '../../utils/get';
 
 export const setValueBase = (
@@ -19,6 +23,10 @@ export const setValueBase = (
 
   const setValueReducer = trackingState => {
     const path = resolvePath(trackingState);
+    if (path === NO_OP) {
+      return;
+    }
+
     const oldValue = get(trackingState.nextState, path);
     const value = resolveValue(trackingState, { value: oldValue });
 

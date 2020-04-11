@@ -2,7 +2,7 @@ import {
   TrackingState,
   PATH_OVERRIDE_SYMBOL
 } from '../../src/helpers/trackingState';
-import { wrapPathResolver } from '../../src/helpers/resolve';
+import { wrapPathResolver, NO_OP } from '../../src/helpers/resolve';
 
 describe('helpers', () => {
   describe('wrapResolvePath', () => {
@@ -23,9 +23,14 @@ describe('helpers', () => {
       expect(pathResolver.mock.calls[0][1]).toBe(action);
     });
 
+    it('should resolve no_op', () => {
+      expect(wrapPathResolver()(trackingState)).toEqual(NO_OP);
+      expect(wrapPathResolver(null)(trackingState)).toEqual(NO_OP);
+      expect(wrapPathResolver(() => null)(trackingState)).toEqual(NO_OP);
+      expect(wrapPathResolver(() => {})(trackingState)).toEqual(NO_OP);
+    });
+
     it('should resolve root path', () => {
-      expect(wrapPathResolver()(trackingState)).toEqual([]);
-      expect(wrapPathResolver(null)(trackingState)).toEqual([]);
       expect(wrapPathResolver('')(trackingState)).toEqual([]);
       expect(wrapPathResolver(() => '')(trackingState)).toEqual([]);
       expect(wrapPathResolver(() => [])(trackingState)).toEqual([]);
@@ -76,16 +81,19 @@ describe('helpers', () => {
         trackingState.context[PATH_OVERRIDE_SYMBOL] = ['field', 'subField'];
       });
 
+      it('should resolve noop', () => {
+        expect(wrapPathResolver()(trackingState)).toEqual(NO_OP);
+        expect(wrapPathResolver(null)(trackingState)).toEqual(NO_OP);
+        expect(wrapPathResolver(() => {})(trackingState)).toEqual(NO_OP);
+        expect(wrapPathResolver(() => null)(trackingState)).toEqual(NO_OP);
+      });
+
       it('should resolve with root path', () => {
-        expect(wrapPathResolver()(trackingState)).toEqual([
-          'field',
-          'subField'
-        ]);
-        expect(wrapPathResolver(null)(trackingState)).toEqual([
-          'field',
-          'subField'
-        ]);
         expect(wrapPathResolver('')(trackingState)).toEqual([
+          'field',
+          'subField'
+        ]);
+        expect(wrapPathResolver([])(trackingState)).toEqual([
           'field',
           'subField'
         ]);

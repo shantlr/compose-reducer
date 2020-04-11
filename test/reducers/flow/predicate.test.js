@@ -69,7 +69,7 @@ describe('reducers', () => {
           const reducer = composeReducer(
             withContext(
               () => ({ field: true }),
-              ifTrue('field', setValue(null, 'it works'))
+              ifTrue('field', setValue('', 'it works'))
             )
           );
           expect(reducer()).toBe('it works');
@@ -79,7 +79,7 @@ describe('reducers', () => {
           const reducer = composeReducer(
             withContext(
               () => ({ field: false }),
-              ifTrue('field', setValue(null, 'it works'))
+              ifTrue('field', setValue('', 'it works'))
             )
           );
           expect(reducer()).toBe(undefined);
@@ -118,7 +118,7 @@ describe('reducers', () => {
           const reducer = composeReducer(
             withContext(
               () => ({ field: false }),
-              ifFalse('field', setValue(null, 'it works'))
+              ifFalse('field', setValue('', 'it works'))
             )
           );
           expect(reducer()).toBe('it works');
@@ -128,7 +128,7 @@ describe('reducers', () => {
           const reducer = composeReducer(
             withContext(
               () => ({ field: true }),
-              ifFalse('field', setValue(null, 'it works'))
+              ifFalse('field', setValue('', 'it works'))
             )
           );
           expect(reducer()).toBe(undefined);

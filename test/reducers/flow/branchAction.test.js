@@ -13,8 +13,8 @@ describe('reducers', () => {
         it('should reduce given action', () => {
           const reducer = composeReducer(
             branchAction({
-              INC: incValue(null, 1),
-              DEC: decValue(null, 1)
+              INC: incValue('', 1),
+              DEC: decValue('', 1)
             })
           );
           expect(reducer(0, { type: 'INC' })).toBe(1);
@@ -25,8 +25,8 @@ describe('reducers', () => {
         it('should ignore action when no reducer is provided', () => {
           const reducer = composeReducer(
             branchAction({
-              INC: incValue(null, 1),
-              DEC: decValue(null, 1)
+              INC: incValue('', 1),
+              DEC: decValue('', 1)
             })
           );
           expect(reducer(0, { type: 'OTHER' })).toBe(0);
@@ -36,10 +36,10 @@ describe('reducers', () => {
           const reducer = composeReducer(
             branchAction(
               {
-                INC: incValue(null, 1)
+                INC: incValue('', 1)
               },
               {
-                DEC: decValue(null, 1)
+                DEC: decValue('', 1)
               }
             )
           );
@@ -53,10 +53,10 @@ describe('reducers', () => {
           const reducer = composeReducer(
             branchAction(
               {
-                ACT: incValue(null, 1)
+                ACT: incValue('', 1)
               },
               {
-                ACT: incValue(null, 5)
+                ACT: incValue('', 5)
               }
             )
           );
@@ -67,7 +67,7 @@ describe('reducers', () => {
         it('should call array of reducers', () => {
           const reducer = composeReducer(
             branchAction({
-              ACT: [incValue(null, 1), incValue(null, 5)]
+              ACT: [incValue('', 1), incValue('', 5)]
             })
           );
           expect(reducer(0, { type: 'OTHER' })).toBe(0);
@@ -78,7 +78,7 @@ describe('reducers', () => {
       describe('array branching', () => {
         it('should reduce given action', () => {
           const reducer = composeReducer(
-            branchAction(['INC', incValue(null, 1)], ['DEC', decValue(null, 1)])
+            branchAction(['INC', incValue('', 1)], ['DEC', decValue('', 1)])
           );
           expect(reducer(0, { type: 'OTHER' })).toBe(0);
           expect(reducer(0, { type: 'INC' })).toBe(1);
@@ -89,8 +89,8 @@ describe('reducers', () => {
         it('should reduce on alias type', () => {
           const reducer = composeReducer(
             branchAction(
-              ['INC', 'INCREASE', incValue(null, 1)],
-              ['DEC', decValue(null, 1)]
+              ['INC', 'INCREASE', incValue('', 1)],
+              ['DEC', decValue('', 1)]
             )
           );
           expect(reducer(0, { type: 'OTHER' })).toBe(0);
@@ -104,8 +104,8 @@ describe('reducers', () => {
         it('should reduce given action', () => {
           const reducer = composeReducer(
             branchAction(
-              [(state, action) => action.type === 'INC', incValue(null, 1)],
-              [(state, action) => action.type === 'DEC', decValue(null, 1)]
+              [(state, action) => action.type === 'INC', incValue('', 1)],
+              [(state, action) => action.type === 'DEC', decValue('', 1)]
             )
           );
           expect(reducer(0, { type: 'OTHER' })).toBe(0);
@@ -117,7 +117,7 @@ describe('reducers', () => {
         it('should call predicate with state at relative path', () => {
           const predicate = jest.fn(() => true);
           const reducer = composeReducer(
-            at('counter', branchAction([predicate, incValue(null, 1)]))
+            at('counter', branchAction([predicate, incValue('', 1)]))
           );
           expect(reducer({ counter: 100 }, { type: 'INC' })).toEqual({
             counter: 101
@@ -135,9 +135,9 @@ describe('reducers', () => {
                 (state, action) => action.type === 'INC',
                 'INC',
                 'INCREASE',
-                incValue(null, 1)
+                incValue('', 1)
               ],
-              [(state, action) => action.type === 'DEC', decValue(null, 1)]
+              [(state, action) => action.type === 'DEC', decValue('', 1)]
             )
           );
           expect(reducer(0, { type: 'OTHER' })).toBe(0);

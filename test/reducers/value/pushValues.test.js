@@ -10,6 +10,17 @@ describe('reducers', () => {
         expect(reducer([3, 2, 1])).toEqual([3, 2, 1, 10, 15, 20]);
       });
 
+      it('should do no op if path is nil', () => {
+        expect(composeReducer(pushValues(null, [1, 2, 3]))([])).toEqual([]);
+        expect(composeReducer(pushValues(undefined, [1, 2, 3]))([])).toEqual(
+          []
+        );
+        expect(composeReducer(pushValues(() => null, [1, 2, 3]))([])).toEqual(
+          []
+        );
+        expect(composeReducer(pushValues(() => {}, [1, 2, 3]))([])).toEqual([]);
+      });
+
       describe('when path is static', () => {
         it('should throw an error when path is invalid', () => {
           expect(() => pushValues(true)).toThrow(

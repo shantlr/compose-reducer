@@ -1,5 +1,5 @@
 import { createReducer } from '../../helpers/createReducer';
-import { wrapPathResolver } from '../../helpers/resolve';
+import { wrapPathResolver, NO_OP } from '../../helpers/resolve';
 
 export const unsetValue = pathResolver => {
   const resolvePath = wrapPathResolver(pathResolver);
@@ -12,7 +12,10 @@ export const unsetValue = pathResolver => {
 
   const unsetValueReducer = trackingState => {
     const path = resolvePath(trackingState);
-    return trackingState.unsetState(path);
+    if (path === NO_OP) {
+      return;
+    }
+    trackingState.unsetState(path);
   };
 
   return createReducer(unsetValueReducer);
