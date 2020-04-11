@@ -2,18 +2,21 @@ import { isString } from '../utils/isString';
 import { isFunction } from '../utils/isFunction';
 import { isRootPath } from '../utils/isRootPath';
 import { get } from '../utils/get';
+import { isNumber } from '../utils/isNumber';
 
-const relativePathResolver = (trackingState, path) => {
+const resolveRelativePath = (trackingState, path) => {
   return [...trackingState.getPath(), ...(path || [])];
 };
 
-const staticRelativePathResolve = path => trackingState => {
-  return relativePathResolver(trackingState, path);
+const staticRelativePathResolve = path => {
+  const staticRelativePathResolver = trackingState =>
+    resolveRelativePath(trackingState, path);
+  return staticRelativePathResolver;
 };
 
 export const resolve = (resolver, trackingState, additionalMeta) => {
   return resolver(
-    get(trackingState.nextState, relativePathResolver(trackingState)),
+    get(trackingState.nextState, resolveRelativePath(trackingState)),
     trackingState.action,
     trackingState.context,
     {
@@ -49,10 +52,10 @@ export const wrapPathResolver = pathResolver => {
       const path = resolve(pathResolver, trackingState);
 
       if (Array.isArray(path)) {
-        return relativePathResolver(trackingState, path);
+        return resolveRelativePath(trackingState, path);
       }
       if (isRootPath(path)) {
-        return relativePathResolver(trackingState, []);
+        return resolveRelativePath(trackingState, []);
       }
       if (isString(path)) {
         return resolveRelativePath(trackingState, path.split('.'));
@@ -71,13 +74,17 @@ export const wrapPathResolver = pathResolver => {
   return null;
 };
 
+const actionAsValueResolver = trackingState => trackingState.action;
 export const wrapValueResolver = valueResolver => {
   if (isFunction(valueResolver)) {
-    return (trackingState, additionalMeta) =>
+    const dynamicValueResolver = (trackingState, additionalMeta) =>
       resolve(valueResolver, trackingState, additionalMeta);
+    return dynamicValueResolver;
   }
   if (valueResolver === undefined) {
-    return trackingState => trackingState.action;
+    return actionAsValueResolver;
   }
-  return () => valueResolver;
+
+  const staticValueResolver = () => valueResolver;
+  return staticValueResolver;
 };
