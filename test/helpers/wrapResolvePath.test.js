@@ -31,6 +31,11 @@ describe('helpers', () => {
       expect(wrapPathResolver(() => [])(trackingState)).toEqual([]);
     });
 
+    it('should resolve simple number path', () => {
+      expect(wrapPathResolver(42)(trackingState)).toEqual([42]);
+      expect(wrapPathResolver(() => 42)(trackingState)).toEqual([42]);
+    });
+
     it('should resolve simple string path', () => {
       expect(wrapPathResolver('field')(trackingState)).toEqual(['field']);
       expect(wrapPathResolver(() => 'field')(trackingState)).toEqual(['field']);
@@ -52,6 +57,8 @@ describe('helpers', () => {
       expect(wrapPathResolver(() => ['field'])(trackingState)).toEqual([
         'field'
       ]);
+      expect(wrapPathResolver([42])(trackingState)).toEqual([42]);
+      expect(wrapPathResolver(() => [42])(trackingState)).toEqual([42]);
     });
 
     it('should resolve nested string path', () => {

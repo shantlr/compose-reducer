@@ -107,7 +107,7 @@ describe('reducers', () => {
         });
 
         it('should throw an error when resolved path is invalid', () => {
-          const pathResolver = jest.fn().mockReturnValue(42);
+          const pathResolver = jest.fn().mockReturnValue({ hello: 'world' });
           const reducer = composeReducer(decValue(pathResolver));
           expect(reducer).toThrow(
             '[path-resolver] Resolved path is expected to be a string or an array of string but received'

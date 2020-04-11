@@ -39,8 +39,8 @@ export const wrapPathResolver = pathResolver => {
   }
 
   // static number path
-  if (typeof pathResolver === 'number') {
-    return staticRelativePathResolve([pathResolver.toString()]);
+  if (isNumber(pathResolver)) {
+    return staticRelativePathResolve([pathResolver]);
   }
 
   // dynamic resolver
@@ -55,7 +55,10 @@ export const wrapPathResolver = pathResolver => {
         return relativePathResolver(trackingState, []);
       }
       if (isString(path)) {
-        return relativePathResolver(trackingState, path.split('.'));
+        return resolveRelativePath(trackingState, path.split('.'));
+      }
+      if (isNumber(path)) {
+        return resolveRelativePath(trackingState, [path]);
       }
 
       throw new Error(
