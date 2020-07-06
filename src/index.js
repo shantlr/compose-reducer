@@ -17,5 +17,9 @@ export { branchAction } from './reducers/flow/branchAction';
 export { withContext } from './reducers/context/withContext';
 export { at } from './reducers/context/at';
 export { mapAction, mapActions, onEach } from './reducers/flow/mapAction';
+export {
+  provideResolver,
+  injectResolver
+} from './reducers/context/provideResolver';
 
 export { pipe, pipe as composable } from './utils/pipe';

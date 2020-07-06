@@ -3,9 +3,9 @@
 [![build status](https://img.shields.io/travis/shantlr/compose-reducer)](https://travis-ci.org/shantlr/compose-reducer)
 [![npm version](https://img.shields.io/npm/v/compose-reducer)](https://www.npmjs.com/package/compose-reducer)
 
-Create reducer in a expressive (and opiniated) way.
+Create reducer in an expressive (and opiniated) way.
 
-Compose reducer has been written being used with redux in mind but it is mostly a declarative way of creating a reducer. As such it can be used in other context where reducer are helpfull.
+Compose reducer has been written being used with redux in mind but it is mostly a declarative way of creating a reducer. As such it can be used in other context where reducer are helpful.
 
 WARNING: This package is still a first draft.
 
@@ -16,33 +16,33 @@ WARNING: This package is still a first draft.
     - [Normalize](#normalize)
     - [Branch](#branch)
   - [Api](#api)
-    - [composeReducer](#composereducer)
+    - [`composeReducer`](#composereducer)
     - [Composable Reducer](#composable-reducer)
     - [Value composable reducer](#value-composable-reducer)
-      - [initState](#initstate)
-      - [setValue](#setvalue)
-      - [unsetValue](#unsetvalue)
-      - [incValue](#incvalue)
-      - [decValue](#decvalue)
-      - [pushValue](#pushvalue)
-      - [pushValues](#pushvalues)
-      - [popValues](#popvalues)
+      - [`initState`](#initstate)
+      - [`setValue`](#setvalue)
+      - [`unsetValue`](#unsetvalue)
+      - [`incValue`](#incvalue)
+      - [`decValue`](#decvalue)
+      - [`pushValue`](#pushvalue)
+      - [`pushValues`](#pushvalues)
+      - [`popValues`](#popvalues)
     - [Flow composable reducer](#flow-composable-reducer)
-      - [branch](#branch)
-      - [predicate](#predicate)
-      - [ifTrue](#iftrue)
-      - [ifFalse](#iffalse)
-      - [branchAction](#branchaction)
-      - [mapAction](#mapaction)
-      - [mapActions](#mapactions)
-      - [onEach](#oneach)
+      - [`branch`](#branch-1)
+      - [`predicate`](#predicate)
+      - [`ifTrue`](#iftrue)
+      - [`ifFalse`](#iffalse)
+      - [`branchAction`](#branchaction)
+      - [`mapAction`](#mapaction)
+      - [`mapActions`](#mapactions)
+      - [`onEach`](#oneach)
     - [Context](#context)
-      - [withContext](#withcontext)
-      - [at](#at)
-      - [provideResolver](#provideresolver)
-      - [injectResolver](#injectresolver)
+      - [`withContext`](#withcontext)
+      - [`at`](#at)
+      - [`provideResolver`](#provideresolver)
+      - [`injectResolver`](#injectresolver)
     - [Utils](#utils)
-      - [composable](#composable)
+      - [`composable`](#composable)
 
 ## Install
 
