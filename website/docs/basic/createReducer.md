@@ -19,20 +19,20 @@ const reducer = composeReducer(...composableReducers);
 Composable-reducers are the building blocks that will allow you to create very simple to very complex value reducing logic.
 Here we will see the most basic ones.
 
-### Path and value resolver
-
-Composable-reducer implements some behaviour some configuration
+Most composable reducer use [pathReducer](/docs/api/pathResolver) and [valueReducer](/docs/api/valueResolver) as arguments.
 
 ### Initialize value
 
 [initState](/docs/api/initState) will initialize state when in-coming state is undefined.
 
 ```ts
-const initialState = { counter: 0 }
+initState(valueResolver);
+```
 
-const reducer = composeReducer(
-  initState(initialState)
-);
+```ts
+const initialState = { counter: 0 };
+
+const reducer = composeReducer(initState(initialState));
 
 // if no state is provided, it will resolve to initialState
 reducer(); // { counter: 0 }
@@ -47,21 +47,21 @@ reducer({ counter: 5 }); // { counter: 5 }
 
 It expect a [path resolver](/docs/api/pathResolver) and a [value resolver](/docs/api/valueResolver) as arguments
 
+```ts
+setValue(pathResolver, valueResolver);
+```
+
 #### Set static value
 
 ```ts
-const reducer = composeReducer(
-  setValue('', 42)
-);
+const reducer = composeReducer(setValue('', 42));
 reducer(); // 42
 ```
 
 #### Set dynamic value
 
 ```ts
-const reducer = composeReducer(
-  setValue('', (state, action) => action)
-);
+const reducer = composeReducer(setValue('', (state, action) => action));
 reducer(null, 100); // 100
 ```
 
@@ -70,24 +70,80 @@ reducer(null, 100); // 100
 ```ts
 const reducer = composeReducer(
   setValue(
-    (state, action) => `items.${action.id}`,
-    (state, action) => action.item,
+    (state, action) => `items.${action.item.id}`,
+    (state, action) => action.item
   )
 );
 
-reducer(
-  { items: {} },
-  { id: 'item1', item: { name: 'Item 1' } }
-);
-// { items: { item1: { name: 'Item 1' } } }
+reducer({ items: {} }, { item: { id: 'id1', name: 'Item 1' } });
+// { items: { id1: { id: 'id1', name: 'Item 1' } } }
 ```
 
-### Unset
+### Unset value
+
+[unsetValue](/docs/api/unsetValue) work much the same way as [setValue](/docs/api/setValue).
+
+```ts
+unsetValue(pathResolver);
+```
+
+```ts
+const reducer = composeReducer(unsetValue(''));
+
+reducer(null); // undefined
+reducer({ hello: 'world' }); // undefined
+```
+
+```ts
+const reducer = composeReducer(unsetValue('field1'));
+
+reducer({ field1: 'hello', field2: 'world' }); // { field2: 'world }
+```
+
+```ts
+const reducer = composedReducer(unsetValue(['field1', '']));
+```
 
 ### Increment/Decrement value
 
-### Push value(s)
+```ts
+incValue(pathResolver, valueResolver);
+decValue(pathResolver, valueResolver);
+```
+
+```ts
+const reducer = composeReducer(incValue('', 1));
+
+reducer(null); // 1
+reducer(2); // 3
+reducer(100); // 101
+```
+
+```ts
+const reducer = composeReducer(incValue('counter', 5));
+
+reducer(null); // { field: 5 }
+reducer({ counter: 10 }); // { counter: 15 }
+```
+
+### Push/pop value(s)
+
+```ts
+pushValue(pathResolver, valueResolver);
+pushValues(pathResolver, valuesResolver);
+popValue(pathResolver, indexResolver);
+```
 
 ## Pipeline
 
 When [composeReducer](/docs/api/composeReducer) receive several composable-reducer, it pipe them so they are executed in given order.
+
+```ts
+const reducer = composeReducer(
+  pushValue('items', (state, action) => action.item)
+  incValue('counter', 1),
+);
+
+reducer({ counter: 0, items: [] }, { item: { id: 'id1' } });
+// { counter: 1, items: [{ id; 'id1' }] }
+```

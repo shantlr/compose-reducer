@@ -18,20 +18,20 @@ module.exports = {
           to: 'docs/intro/gettingStarted',
           activeBasePath: 'docs',
           label: 'Getting started',
-          position: 'left',
+          position: 'left'
         },
         // {to: 'blog', label: 'Blog', position: 'left'},
         {
           to: 'docs/api/composeReducer',
           label: 'API',
-          position: 'right',
+          position: 'right'
         },
         {
           href: 'https://github.com/shantlr/compose-reducer',
           label: 'GitHub',
-          position: 'right',
-        },
-      ],
+          position: 'right'
+        }
+      ]
     },
     footer: {
       style: 'dark',
@@ -80,8 +80,8 @@ module.exports = {
         //   ],
         // },
       ],
-      copyright: `Copyright © ${new Date().getFullYear()} My Project, Inc. Built with Docusaurus.`,
-    },
+      copyright: `Copyright © ${new Date().getFullYear()} My Project, Inc. Built with Docusaurus.`
+    }
   },
   presets: [
     [
@@ -89,13 +89,12 @@ module.exports = {
       {
         docs: {
           sidebarPath: require.resolve('./sidebars.js'),
-          editUrl:
-            'https://github.com/facebook/docusaurus/edit/master/website/',
+          editUrl: 'https://github.com/facebook/docusaurus/edit/master/website/'
         },
         theme: {
-          customCss: require.resolve('./src/css/custom.css'),
-        },
-      },
-    ],
-  ],
+          customCss: require.resolve('./src/css/custom.css')
+        }
+      }
+    ]
+  ]
 };

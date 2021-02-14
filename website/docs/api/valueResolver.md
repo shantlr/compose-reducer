@@ -5,5 +5,5 @@ sidebar_label: valueResolver
 ---
 
 ```ts
-type ValueResolver = (state: any, action: any, context: any) => any
+type ValueResolver = (state: any, action: any, context: object) => any;
 ```
