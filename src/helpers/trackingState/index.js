@@ -22,7 +22,11 @@ export class TrackingState {
   }
 
   get action() {
-    return this.context[ACTION_OVERRIDE_SYMBOL] || this.initialAction;
+    const overrideAction = this.context[ACTION_OVERRIDE_SYMBOL];
+    if (overrideAction !== undefined) {
+      return overrideAction;
+    }
+    return this.initialAction;
   }
 
   updateState(path, value) {
