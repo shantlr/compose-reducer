@@ -23,3 +23,7 @@ export {
 } from './reducers/context/provideResolver';
 
 export { pipe, pipe as composable } from './utils/pipe';
+
+export { getAction } from './valueResolver/getAction';
+export { getState } from './valueResolver/getState';
+export { compute } from './valueResolver/compute';

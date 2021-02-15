@@ -21,9 +21,10 @@ describe('reducers', () => {
         expect(action).toBe(expectedAction);
       });
 
-      it('should scope replaced action', () => {
+      it('should only replace action in inner scope', () => {
         const composableReducer = jest.fn();
         mapAction({ hello: 'world' }, composableReducer)(trackingState);
+        // should not replace action outside of scope
         expect(trackingState.action).toEqual(undefined);
       });
 
@@ -61,6 +62,17 @@ describe('reducers', () => {
         expect(a2).toBe(expectedAction2);
 
         expect(trackingState.context).toEqual({});
+      });
+
+      it('should replace action with resolved null', () => {
+        let action;
+        const r = jest.fn().mockImplementation(
+          createReducer(ts => {
+            action = ts.action;
+          })
+        );
+        mapAction(() => null, r)(trackingState);
+        expect(action).toBe(null);
       });
     });
   });
