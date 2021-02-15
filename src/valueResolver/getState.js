@@ -1,4 +1,3 @@
-import { createReducer } from '../helpers/createReducer';
 import { get } from '../utils/get';
 
 export const getState = path => {

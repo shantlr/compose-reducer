@@ -1,4 +1,3 @@
-import { createReducer } from '../helpers/createReducer';
 import { initial } from '../utils/initial';
 import { last } from '../utils/last';
 
