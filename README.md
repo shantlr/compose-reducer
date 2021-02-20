@@ -43,8 +43,18 @@ WARNING: This package is still a first draft.
       - [`injectResolver`](#injectresolver)
     - [Utils](#utils)
       - [`composable`](#composable)
+    - [Value resolver](#value-resolver)
+      - [`getState`](#getstate)
+      - [`getAction`](#getaction)
+      - [`array`](#array)
+      - [`object`](#object)
+      - [`compute`](#compute)
+      - [`comparison`](#comparison)
+      - [`min/max`](#minmax)
 
 ## Install
+
+`npm install compose-reducer`
 
 `yarn add compose-reducer`
 
@@ -833,4 +843,191 @@ const rootReducer = composeReducer(
   at('todos', reduceTodos),
   at('visibility', reduceVisibility)
 );
+```
+
+### Value resolver
+
+Basic high order resolver. They can be used outside of composeReducer.
+
+```ts
+type ValueResolver = (state, action) => any;
+```
+
+#### `getState`
+
+Resolve value from state using resolved path
+
+```ts
+getState<T>(
+  ...paths: (String | String[] | (state, action) => T)[]
+): ValueResolver<T>
+```
+
+```ts
+import { getState } from 'compose-reducer';
+
+const state = {
+  value: 'hello',
+  field: {
+    subField: 'world'
+  }
+};
+getState('value')(state); // 'hello'
+
+// nested path as string
+getState('field.subField')(state); // 'world'
+
+// nested path as array
+getState(['field', 'subField'])(state); // 'world'
+
+// path as multiple arguments
+getState('field', 'subField')(state); // 'world'
+
+// resolve path element dynamically
+getState('field', (state, action) => action.field)(state, {
+  field: 'subField'
+}); // 'world'
+```
+
+#### `getAction`
+
+Resolve value from action using resolved path
+
+```ts
+getAction<T>(
+  ...paths: (String | String[] | (state, action) => T)[]
+): ValueResolver<T>
+```
+
+```ts
+import { getAction } from 'compose-reducer';
+
+const action = {
+  value: 'hello',
+  field: {
+    subField: 'world'
+  }
+};
+
+getAction('value')(null, action); // 'hello'
+
+// nested path as string
+getAction('field.subField')(null, action); // 'world'
+
+// nested path as array
+getAction(['field', 'subField'])(null, action); // 'world'
+
+// path as multiple arguments
+getAction('field', 'subField')(null, action); // 'world'
+
+// resolve path element dynamically
+getAction('field', (state, action) => state)('subField', action); // 'world'
+```
+
+#### `array`
+
+Resolve an array
+
+```ts
+array<T>(
+  ...paths: (T | (state, action) => T)[]
+): ValueResolver<Array<T>>
+```
+
+```ts
+import { array, getAction } from 'compose-reducer';
+
+array(1, 2)(); // [1, 2]
+array('field', 'subField'); // ['field', 'subField']
+array('field', getAction('field'))(null, { field: 'subField' }); // ['field', 'subField']
+```
+
+#### `object`
+
+Resolve an object
+
+```ts
+object<T>(obj: T): {
+  [P in keyof T]: T extends Function ? ReturnType<T> : T
+}
+```
+
+```ts
+import { object } from 'compose-reducer';
+
+object({
+  id: getAction('id')
+  name: 'hello',
+  count: (state, action) => state.count
+})({
+  count: 1,
+}, {
+  id: 1234
+});
+// {
+//   id: 1234,
+//   name: 'hello'
+//   count: 1
+// }
+```
+
+Note: if the object mapping contain dynamic field value resolver, then a new object will be created at each resolve
+However if resolved object is total static, it will always resolve to the same object
+
+```ts
+import { object } from 'compose-reducer';
+
+const resolver = object({
+  hello: () => 'world'
+});
+
+const state1 = resolver(); // { hello: 'world' }
+const state2 = resolver(); // { hello: 'world' }
+state1 === state2; // false
+```
+
+```ts
+import { object } from 'compose-reducer';
+
+const resolver = object({
+  hello: 'world'
+});
+
+const state1 = resolver(); // { hello: 'world' }
+const state2 = resolver(); // { hello: 'world' }
+state1 === state2; // true
+```
+
+#### `compute`
+
+Resolve multiple values and compute them into a single value
+
+```ts
+import { compute } from 'compose-reducer';
+
+compute(
+  (state, action) => state,
+  ' ',
+  (state, action) => action,
+  (arg1, arg2, arg3) => arg1 + arg2 + arg3
+)('hello', 'world'); // 'hello world'
+```
+
+#### `comparison`
+
+```ts
+type NumberResolver = number | (state, action) => number;
+eq(value: NumberResolver, other: NumberResolver): ValueResolver<boolean>
+gt(value: NumberResolver, other: NumberResolver): ValueResolver<boolean>
+gte(value: NumberResolver, other: NumberResolver): ValueResolver<boolean>
+lt(value: NumberResolver, other: NumberResolver): ValueResolver<boolean>
+lte(value: NumberResolver, other: NumberResolver): ValueResolver<boolean>
+```
+
+#### `min/max`
+
+```ts
+type NumberResolver = number | (state, action) => number;
+min(...NumberResolver[]): ValueResolver<number>
+max(...NumberResolver[]): ValueResolver<number>
 ```

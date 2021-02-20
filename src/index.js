@@ -27,7 +27,13 @@ export { pipe, pipe as composable } from './utils/pipe';
 export { getAction } from './valueResolver/getAction';
 export { getState } from './valueResolver/getState';
 export { compute } from './valueResolver/compute';
-export { max } from './valueResolver/max';
-export { min } from './valueResolver/min';
 export { object } from './valueResolver/object';
 export { array } from './valueResolver/array';
+
+export { max } from './valueResolver/max';
+export { min } from './valueResolver/min';
+export { gt } from './valueResolver/gt';
+export { gte } from './valueResolver/gte';
+export { lt } from './valueResolver/lt';
+export { lte } from './valueResolver/lte';
+export { eq } from './valueResolver/eq';
