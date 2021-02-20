@@ -101,13 +101,9 @@ export const wrapValueResolver = valueResolver => {
   return staticValueResolver;
 };
 
-const resolveActionAsValue = (state, action) => action;
 export const wrapSimpleValueResolver = valueResolver => {
   if (isFunction(valueResolver)) {
     return valueResolver;
-  }
-  if (valueResolver === undefined) {
-    return resolveActionAsValue;
   }
 
   const staticValueResolver = () => valueResolver;
