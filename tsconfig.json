@@ -1,0 +1,17 @@
+{
+  "include": ["src/**/*.ts"],
+  "exclude": ["node_modules/**"],
+  "compilerOptions": {
+    "incremental": true,
+    "module": "commonjs",
+    "target": "es2017",
+    "rootDir": "./src",
+    "moduleResolution": "node",
+    "outDir": "./dist/main",
+    "declaration": true,
+    "inlineSourceMap": true,
+    "esModuleInterop": true,
+    "resolveJsonModule": true
+  },
+  "compileOnSave": false
+}
