@@ -630,7 +630,7 @@ reducer(
 
 #### `onEach`
 
-Alias of [withActions](#withactions)
+Alias of [mapActions](#mapactions)
 
 ```ts
 import { composeReducer, onEach, setValue, pushValue } from 'compose-reducer';

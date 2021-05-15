@@ -5,11 +5,12 @@ import {
   StaticPathOrPathResolver
 } from '../../helpers/resolve';
 import { ValueAtPath } from '../../utils/get';
+import { ComposableReducer } from '../../helpers/createReducer';
 
 export const incValue = <State, Action>(
   pathResolver: StaticPathOrPathResolver<State, Action>,
   valueResolver: StaticOrValueResolverWithContext<State, Action, number>
-) => {
+): ComposableReducer<State, Action> => {
   const incValueHandler: BaseSetValueHandler<
     State,
     Action,

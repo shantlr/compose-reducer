@@ -11,7 +11,8 @@
     "declaration": true,
     "inlineSourceMap": true,
     "esModuleInterop": true,
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "noErrorTruncation": true
   },
   "compileOnSave": false
 }

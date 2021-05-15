@@ -1,7 +1,7 @@
 import {
   wrapPathResolver,
   NO_OP,
-  StaticPathOrPathResolver
+  StaticOrValueResolver
 } from '../../helpers/resolve';
 import { withContextBase } from './withContext';
 import {
@@ -9,19 +9,23 @@ import {
   TrackingState
 } from '../../helpers/trackingState';
 import { ComposableReducer } from '../../helpers/createReducer';
-import { ValueAtPath } from '../../utils/get';
+import { PathElem, ValueAtPath } from '../../utils/get';
 
-export const at = <State, Action>(
-  pathResolver: StaticPathOrPathResolver<State, Action>,
-  ...composableReducers: ComposableReducer<
-    ValueAtPath<State, typeof pathResolver>,
-    Action
-  >[]
-) => {
+export const at = <
+  State,
+  Action,
+  P extends PathElem | PathElem[]
+  // U extends ValueAtPath<State, P> = ValueAtPath<State, P>
+>(
+  pathResolver: StaticOrValueResolver<State, Action, P>,
+  ...composableReducers: ComposableReducer<ValueAtPath<State, P>, Action>[]
+): // pathResolver: StaticPathOrPathResolver<State, Action>,
+// ...composableReducers: ComposableReducer<ValueAtPath<State, P>, Action>[]
+ComposableReducer<State, Action> => {
   const resolvePath = wrapPathResolver(pathResolver);
 
   const overridePath = (trackingState: TrackingState<State, Action>) => {
-    const path = resolvePath(trackingState);
+    const path = resolvePath(trackingState) as P | typeof NO_OP;
     if (path === NO_OP) {
       return null;
     }

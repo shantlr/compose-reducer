@@ -3,26 +3,36 @@ import { isNil } from './isNil';
 export type PathElem = string | number;
 
 // resolve type of get(T, P)
-export type ValueAtPathImpl<T, P extends PathElem[]> = T extends Record<
-  PathElem,
-  any
->
-  ? P extends [infer U, ...(infer R)]
-    ? U extends keyof T
-      ? R extends PathElem[]
-        ? ValueAtPathImpl<T[U], R>
-        : U
-      : U
-    : T
-  : T;
+export type ValueAtPathImpl<T, P extends PathElem[]> =
+  P extends [] ? T : T extends Record<
+    PathElem,
+    any
+  >
+    ? P extends [infer U, ...(infer R)]
+      ? U extends keyof T
+        ? R extends PathElem[]
+          ? ValueAtPathImpl<T[U], R>
+          : T[U]
+        : '__invalid_path' | unknown
+      : '__invalid_path' | unknown
+    : '__value_not_record' | unknown;
 
 export type ValueAtPath<T, P> = P extends PathElem[]
   ? ValueAtPathImpl<T, P>
-  : P extends PathElem
-  ? ValueAtPathImpl<T, [P]>
+  : P extends string
+  ? ValueAtPathImpl<T, DottedStringToPath<P>>
+  // : P extends PathElem
+  // ? ValueAtPathImpl<T, [P]>
   : P extends (...args: any[]) => infer Res
   ? ValueAtPath<T, Res>
-  : never;
+  : any;
+
+
+// type A = ValueAtPath<{ world: 'test' }, 'world'>
+
+export type DottedStringToPath<T> = T extends `${infer U}.${infer V}`
+  ? [U, ...DottedStringToPath<V>]
+  : T extends `${infer U}` ? [U] : never;
 
 // resolve possible path of object
 export type ResolvableDottedStringPathImpl<
@@ -38,6 +48,21 @@ export type ResolvableDottedStringPathImpl<
 export type ResolvableDottedStringPath<State> = State extends Record<string | number, any>
   ? ResolvableDottedStringPathImpl<State>
   : never;
+
+// type P = ResolvableDottedStringPath<{
+//   test: 'hello',
+//   world: {
+//     field: {
+//       test: '1'
+//     }
+//   }
+// }>
+
+// type Test = ValueAtPath<{
+//   world: {
+//     test: 1
+//   }
+// }, "world.test">
 
 export type PathUnionToTuple<T extends PathElem, U> = U extends never
   ? [T]
