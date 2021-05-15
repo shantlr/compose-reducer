@@ -3,6 +3,7 @@ export { composeReducer, createReducer } from './helpers/createReducer';
 export { initState } from './reducers/value/initState';
 
 export { setValue, setValueBase } from './reducers/value/setValue';
+export { mergeValue } from './reducers/value/mergeValue';
 export { unsetValue } from './reducers/value/unsetValue';
 
 export { incValue } from './reducers/value/incValue';

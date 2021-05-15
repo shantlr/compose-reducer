@@ -27,6 +27,7 @@ WARNING: This package is still a first draft.
       - [`pushValue`](#pushvalue)
       - [`pushValues`](#pushvalues)
       - [`popValues`](#popvalues)
+      - [`mergeValue`](#mergevalue)
     - [Flow composable reducer](#flow-composable-reducer)
       - [`branch`](#branch-1)
       - [`predicate`](#predicate)
@@ -406,6 +407,15 @@ const reducer2 = composeReducer(popValues('array', [1, 2, 3]));
 reducer2({ array: ['hello', 'world', 'hel', 'wor'] }); // { array: ['hello']}
 // ignore out of range indexes
 reducer2({ array: ['hello', 'world'] }); // { array: ['hello']}
+```
+
+#### `mergeValue`
+
+```ts
+mergeValue(
+  pathResolver: string | string[] | ((state: any, action: any, context: object) => string | string[]),
+  objectResolver: object | ((state: any, action: any, context: object) => object)
+): ComposableReducer
 ```
 
 ### Flow composable reducer
